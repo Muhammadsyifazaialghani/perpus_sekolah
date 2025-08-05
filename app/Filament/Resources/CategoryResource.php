@@ -6,9 +6,9 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -21,48 +21,38 @@ class CategoryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
     public static function form(Form $form): Form
-{
-    return $form
-        ->schema([
-
-            //card
-            Forms\Components\Card::make()
-                ->schema([
-
-                    //name
-                    Forms\Components\TextInput::make('name')
-                      ->label('Category Name')
-                      ->placeholder('Category Name')
-                      ->required(),
-
-                    //description
-                    Forms\Components\Textarea::make('description')
-                      ->label('Description')
-                      ->placeholder('Description')
-                      ->rows(5)
-                      ->required(),
-                    
-                ])
-        ]);
-}
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label('Category Name')
+                    ->placeholder('Category Name')
+                    ->required(),
+                Forms\Components\Textarea::make('description')
+                    ->label('Description')
+                    ->placeholder('Description')
+                    ->rows(5)
+                    ->required(),
+            ]);
+    }
 
     public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            Tables\Columns\TextColumn::make('name')->searchable(),
-            Tables\Columns\TextColumn::make('description'),
-        ])
-        ->filters([
-            //
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
-}
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('description'),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
     
     public static function getRelations(): array
     {

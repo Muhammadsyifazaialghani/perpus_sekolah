@@ -6,7 +6,7 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
@@ -19,44 +19,28 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
 
-    public static function form(Form $form): Form
+public static function form(Form $form): Form
 {
     return $form
         ->schema([
-
-            //card
-            Forms\Components\Card::make()
-                ->schema([
-                
-                		//image
                     Forms\Components\FileUpload::make('image')
                         ->label('Image')
                         ->required(),
-
-                    //grid
                     Forms\Components\Grid::make(2)
-                      ->schema([
-
-                         //title
-                          Forms\Components\TextInput::make('title')
-                          ->label('Title')
-                          ->placeholder('Title')
-                          ->required(), 
-
-                          //category
-                          Forms\Components\Select::make('category_id')
-                              ->label('Category')
-                              ->relationship('category', 'name')
-                              ->required(),
-                      ]),
-
-                    //content
+                        ->schema([
+                            Forms\Components\TextInput::make('title')
+                                ->label('Title')
+                                ->placeholder('Title')
+                                ->required(),
+                            Forms\Components\Select::make('category_id')
+                                ->label('Category')
+                                ->relationship('category', 'name')
+                                ->required(),
+                        ]),
                     Forms\Components\RichEditor::make('content')
                         ->label('Content')
                         ->placeholder('Content')
                         ->required(),
-                    
-                ])
         ]);
 }
 
