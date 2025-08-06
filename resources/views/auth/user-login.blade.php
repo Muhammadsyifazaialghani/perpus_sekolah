@@ -19,6 +19,11 @@
                     </ul>
                 </div>
             @endif
+            @if (session('success'))
+                <div class="mb-4 text-green-600 bg-green-100 p-3 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
             <form method="POST" action="{{ route('login.post') }}">
                 @csrf
                 <div class="mb-4">
@@ -31,6 +36,13 @@
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login</button>
             </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">Belum punya akun?</p>
+                <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    Daftar sekarang
+                </a>
+            </div>
         </div>
     </div>
 </body>

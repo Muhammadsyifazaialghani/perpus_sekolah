@@ -19,6 +19,11 @@
                     </ul>
                 </div>
             @endif
+            @if (session('success'))
+                <div class="mb-4 text-green-600 bg-green-100 p-3 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
             <form method="POST" action="{{ route('admin.login.post') }}">
                 @csrf
                 <div class="mb-4">
