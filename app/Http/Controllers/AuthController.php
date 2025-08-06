@@ -34,7 +34,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Username Atau Password salah',
         ]);
     }
 
@@ -58,7 +58,7 @@ class AuthController extends Controller
         $user = \App\Models\User::create($data);
         Log::info('User created: ', ['user' => $user]);
 
-        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
+        return redirect()->route('login')->with('success', 'Registrasi Berhasil.');
     }
 
     public function showAdminLogin()
