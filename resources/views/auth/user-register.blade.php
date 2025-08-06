@@ -16,7 +16,7 @@
             </ul>
         </div>
     @endif
-<form method="POST" action="{{ url('/user/register') }}">
+<form method="POST" action="{{ route('register.post') }}">
         @csrf
         <label for="name">Name:</label><br />
         <input type="text" id="name" name="name" value="{{ old('name') }}" required /><br /><br />

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -44,6 +45,7 @@ class AuthController extends Controller
 
     public function userRegister(Request $request)
     {
+        Log::info('userRegister method called');
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -53,7 +55,8 @@ class AuthController extends Controller
         $data['password'] = bcrypt($data['password']);
         $data['role'] = 'user';
 
-        \App\Models\User::create($data);
+        $user = \App\Models\User::create($data);
+        Log::info('User created: ', ['user' => $user]);
 
         return redirect()->route('login')->with('success', 'Registration successful. Please login.');
     }
@@ -120,9 +123,9 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         if ($role === 'admin') {
-            return redirect()->route('admin.login')->with('success', 'You have been successfully logged out.');
+            return redirect()->route('admin.login')->with('success', 'kamu berhasil logout.');
         } else {
-            return redirect()->route('login')->with('success', 'You have been successfully logged out.');
+            return redirect()->route('login')->with('success', 'kamu berhasil logout.');
         }
     }
 }
