@@ -23,7 +23,10 @@ class RoleMiddleware
         }
 
         if (Auth::user()->role !== $role) {
-            abort(403, 'Unauthorized');
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/login')->withErrors(['email' => 'Unauthorized access for this role.']);
         }
 
         return $next($request);
