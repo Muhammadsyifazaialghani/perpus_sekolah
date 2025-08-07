@@ -8,7 +8,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    </body>
+    @yield('content')
+</body>
 </html>
         <style>
             [x-cloak] {
@@ -150,3 +151,8 @@
 
             @media (max-width: 768px) {
                 .container {
+                }
+            }
+        </style>
+    </body>
+    </html>
