@@ -42,4 +42,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+     public function canAccessFilament(): bool
+    {
+        // Contoh: Hanya user dengan role 'admin' yang bisa mengakses Filament
+        // Pastikan user yang Anda gunakan untuk login memiliki role='admin' di database
+        return $this->role === 'admin';
+
+        // Jika semua user boleh mengakses admin panel (tidak disarankan untuk produksi):
+        // return true;
+    }
 }
