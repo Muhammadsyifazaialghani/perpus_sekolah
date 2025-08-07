@@ -30,7 +30,7 @@ class AuthController extends Controller
                 ]);
             }
 
-            return redirect()->intended('/user/dashboard');
+            return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
@@ -83,7 +83,7 @@ class AuthController extends Controller
                 ]);
             }
 
-            return redirect()->intended('/admin');
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return back()->withErrors([

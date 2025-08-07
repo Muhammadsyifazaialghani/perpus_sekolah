@@ -31,12 +31,15 @@ Route::post('/admin/register', [AuthController::class, 'adminRegister'])->name('
 
 // User dashboard route
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 });
 
-// Admin dashboard route - ensure admin role
+// Admin dashboard route - ensure admin role and redirect non-admin users
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
-        return redirect('/admin');
+        if (auth()->user()->role === 'admin') {
+            return redirect('/admin');
+        }
+        return redirect('/dashboard');
     })->name('admin.dashboard');
 });
