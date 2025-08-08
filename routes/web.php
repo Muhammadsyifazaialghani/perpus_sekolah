@@ -8,6 +8,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/return/book', [AuthController::class, 'returnBook'])->name('return.book');    
+
 // Login options page
 Route::get('/login', function () {
     return view('auth.login-options');

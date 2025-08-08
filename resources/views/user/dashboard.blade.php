@@ -14,6 +14,7 @@
                 <li><a href="{{ route('dashboard') }}">Buku</a></li>
                 <li><a href="#">Kategori</a></li>
                 <li><a href="#">Penulis</a></li>
+                <li><a href="{{ route('return.book') }}">Pengembalian</a></li>
             </ul>
         </div>
     </nav>
@@ -462,6 +463,7 @@ tr:hover {
                         @if($book->available)
                         <a href="{{ route('dashboard.book.borrow.form', $book->id) }}" class="text-green-600 hover:underline">Pinjam</a>
                         @else
+                        <a href="" class="text vl"></a>
                         <span class="text-gray-400">Pinjam</span>
                         @endif
                     </td>

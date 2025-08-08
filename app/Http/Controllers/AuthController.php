@@ -13,6 +13,11 @@ class AuthController extends Controller
         return view('auth.user-login');
     }
 
+    public function returnBook()
+    {
+        return view('user.return_book');
+    }
+
     public function userLogin(Request $request)
     {
         $credentials = $request->validate([
