@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Sederhana - Demo</title>
+    <title>Perpustakaan Sekolah</title>
     <link rel="stylesheet" href="{{ asset('resource/css/custom.css') }}">
 </head>
 <style>
@@ -237,7 +237,7 @@ main {
         </div>
     </header>
 
-    <nav class="nav">
+    <!-- <nav class="nav">
         <div class="container">
             <ul>
                 <li><a href="#">Beranda</a></li>
@@ -246,14 +246,14 @@ main {
                 <li><a href="#">Penulis</a></li>
             </ul>
         </div>
-    </nav>
+    </nav> -->
 
     <main class="container">
         <div class="card">
             <h2>Selamat Datang di Perpustakaan</h2>
             <p>Sistem perpustakaan sekolah yang sederhana dan mudah digunakan.</p>
             <button class="btn btn-primary">Lihat Semua Buku</button>
-            <button class="btn btn-secondary">Login</button>
+            <a href="{{ route('login') }}" class="btn btn-secondary">Login</a>
         </div>
     </main>
 </body>

@@ -8,9 +8,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Login options page
+Route::get('/login', function () {
+    return view('auth.login-options');
+})->name('login');
+
 // User login routes
-Route::get('/login', [AuthController::class, 'showUserLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'userLogin'])->name('login.post');
+Route::get('/user/login', [AuthController::class, 'showUserLogin'])->name('user.login');
+Route::post('/user/login', [AuthController::class, 'userLogin'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // User register routes

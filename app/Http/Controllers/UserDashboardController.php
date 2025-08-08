@@ -34,7 +34,7 @@ class UserDashboardController extends Controller
     {
         $book = Book::findOrFail($id);
         if (!$book->available) {
-            return redirect()->route('user.dashboard')->with('error', 'Buku tidak tersedia');
+            return redirect()->route('dashboard')->with('error', 'Buku tidak tersedia');
         }
         return view('user.borrow_form', compact('book'));
     }
@@ -43,7 +43,7 @@ class UserDashboardController extends Controller
     {
         $book = Book::findOrFail($id);
         if (!$book->available) {
-            return redirect()->route('user.dashboard')->with('error', 'Buku tidak tersedia');
+            return redirect()->route('dashboard')->with('error', 'Buku tidak tersedia');
         }
 
         $borrowing = Borrowing::create([
@@ -58,6 +58,6 @@ class UserDashboardController extends Controller
         $book->available = false;
         $book->save();
 
-        return redirect()->route('user.dashboard')->with('success', 'Peminjaman berhasil dikonfirmasi');
+        return redirect()->route('dashboard')->with('success', 'Peminjaman berhasil dikonfirmasi');
     }
 }
