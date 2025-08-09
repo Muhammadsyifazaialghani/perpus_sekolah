@@ -36,7 +36,12 @@ Route::post('/admin/logout', [AuthController::class, 'logout'])->name('filament.
 Route::get('/admin/register', [AuthController::class, 'showAdminRegister'])->name('admin.register');
 Route::post('/admin/register', [AuthController::class, 'adminRegister'])->name('admin.register.post');
 
-// User dashboard route
+// Public dashboard route - accessible without login
+Route::get('/books', [UserDashboardController::class, 'publicIndex'])->name('public.dashboard');
+Route::get('/books/search', [UserDashboardController::class, 'publicSearch'])->name('public.dashboard.search');
+Route::get('/books/{id}', [UserDashboardController::class, 'publicShowBook'])->name('public.book.detail');
+
+// User dashboard route - requires login
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/search', [UserDashboardController::class, 'searchBooks'])->name('dashboard.search');

@@ -34,16 +34,19 @@
             </nav>
             <div class="profile-section">
                 <button class="profile-button" onclick="toggleDropdown()">
-                    <div class="profile-avatar">
-                        <span class="avatar-initial">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                    </div>
-                    <span class="user-name">{{ auth()->user()->name }}</span>
+            @if(auth()->check())
+            <div class="profile-avatar">
+                <span class="avatar-initial">{{ substr(auth()->user()->name, 0, 1) }}</span>
+            </div>
+            <span class="user-name">{{ auth()->user()->name }}</span>
+            @endif
                     <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
                 <div id="profile-dropdown" class="dropdown-menu">
                     <div class="dropdown-header">
+                        @if(auth()->check())
                         <div class="profile-info">
                             <div class="profile-avatar-large">
                                 <span class="avatar-initial-large">{{ substr(auth()->user()->name, 0, 1) }}</span>
@@ -53,6 +56,7 @@
                                 <p class="user-email">{{ auth()->user()->email }}</p>
                             </div>
                         </div>
+                        @endif
                     </div>
                     <div class="dropdown-actions">
                         <a href="#" class="dropdown-action-link">

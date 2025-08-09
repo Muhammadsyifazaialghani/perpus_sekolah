@@ -252,7 +252,7 @@ main {
         <div class="card">
             <h2>Selamat Datang di Perpustakaan</h2>
             <p>Sistem perpustakaan sekolah yang sederhana dan mudah digunakan.</p>
-            <button class="btn btn-primary">Lihat Semua Buku</button>
+            <a href="{{ route('public.dashboard') }}" class="btn btn-primary">Lihat Semua Buku</a>
             <a href="{{ route('login') }}" class="btn btn-secondary">Login</a>
         </div>
     </main>

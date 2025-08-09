@@ -16,6 +16,27 @@ class UserDashboardController extends Controller
         return view('user.dashboard', compact('books', 'user'));
     }
 
+    public function publicIndex(Request $request)
+    {
+        $books = Book::paginate(10);
+        return view('user.dashboard', compact('books'));
+    }
+
+    public function publicSearch(Request $request)
+    {
+        $query = $request->input('query');
+        $books = Book::where('title', 'like', "%{$query}%")
+            ->orWhere('author', 'like', "%{$query}%")
+            ->paginate(10);
+        return view('user.dashboard', compact('books'));
+    }
+
+    public function publicShowBook($id)
+    {
+        $book = Book::findOrFail($id);
+        return view('user.book_detail', compact('book'));
+    }
+
     public function searchBooks(Request $request)
     {
         $query = $request->input('query');
