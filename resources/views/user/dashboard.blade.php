@@ -8,17 +8,7 @@
         <input type="text" name="query" placeholder="Cari buku..." class="border p-2 rounded w-full" value="{{ request('query') }}">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Cari</button>
     </form>
-    <nav class="nav">
-        <div class="container">
-            <ul>
-                <li><a href="{{ route('dashboard') }}">Buku</a></li>
-                <li><a href="#">Kategori</a></li>
-                <li><a href="#">Penulis</a></li>
-                <li><a href="{{ route('return.book') }}">Pengembalian</a></li>
-            </ul>
-        </div>
-    </nav>
-
+    
     <style>
         /* CSS Utama */
 :root {

@@ -12,7 +12,8 @@ class UserDashboardController extends Controller
     public function index(Request $request)
     {
         $books = Book::paginate(10);
-        return view('user.dashboard', compact('books'));
+        $user = auth()->user();
+        return view('user.dashboard', compact('books', 'user'));
     }
 
     public function searchBooks(Request $request)
