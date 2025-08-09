@@ -48,11 +48,16 @@
                         </div>
                     </div>
                     
-                    <div class="mb-5">
+                     <div class="mb-5">
                         <label for="class_major" class="block text-gray-700 font-bold mb-2 text-sm">Kelas / Jurusan</label>
                         <div class="relative">
-                            <input type="text" id="class_major" name="class_major" placeholder="Kelas/Jurusan atau Unit Kerja"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 shadow-sm">
+                            <select id="class_major" name="class_major" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 shadow-sm">
+                                <option value="" disabled selected>Pilih Kelas / Jurusan</option>
+                                <option value="PPLG (RPL)">RPL (PPLG)</option>
+                                <option value="TJKT (TKJ)">TKJ (TJKT)</option>
+                                <option value="DKV (MM)">MM (DKV)</option>
+                                <option value="MPLB">MPLB</option>
+                            </select>
                         </div>
                     </div>
                     
