@@ -68,8 +68,17 @@ class UserDashboardController extends Controller
             return redirect()->route('dashboard')->with('error', 'Buku tidak tersedia');
         }
 
+        $userId = Auth::id();
+        $activeBorrowingsCount = Borrowing::where('user_id', $userId)
+            ->whereIn('status', ['pending', 'approved'])
+            ->count();
+
+        if ($activeBorrowingsCount >= 3) {
+            return redirect()->route('dashboard')->with('error', 'Batas maksimal peminjaman adalah 3 buku.');
+        }
+
         $borrowing = Borrowing::create([
-            'user_id' => Auth::id(),
+            'user_id' => $userId,
             'book_id' => $book->id,
             'borrowed_at' => now(),
             'due_at' => now()->addWeeks(2),
@@ -81,5 +90,16 @@ class UserDashboardController extends Controller
         $book->save();
 
         return redirect()->route('dashboard')->with('success', 'Peminjaman berhasil dikonfirmasi');
+    }
+
+    public function borrowHistory()
+    {
+        $user = auth()->user();
+        $borrowings = Borrowing::with('book')
+            ->where('user_id', $user->id)
+            ->orderBy('borrowed_at', 'desc')
+            ->paginate(10);
+
+        return view('user.borrow_history', compact('borrowings'));
     }
 }

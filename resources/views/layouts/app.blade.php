@@ -23,7 +23,7 @@
                     <i class="fas fa-tags"></i>
                     <span>Kategori</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('return.book') }}" class="nav-link">
                     <i class="fas fa-user-edit"></i>
                     <span>Penulis</span>
                 </a>
@@ -59,14 +59,14 @@
                         @endif
                     </div>
                     <div class="dropdown-actions">
-                        <a href="#" class="dropdown-action-link">
-                            <i class="fas fa-user-cog"></i>
-                            <span>Pengaturan Akun</span>
-                        </a>
-                        <a href="#" class="dropdown-action-link">
-                            <i class="fas fa-history"></i>
-                            <span>Riwayat Peminjaman</span>
-                        </a>
+                    <a href="#" class="dropdown-action-link">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Pengaturan Akun</span>
+                    </a>
+                    <a href="{{ route('dashboard.borrow.history') }}" class="dropdown-action-link">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Peminjaman</span>
+                    </a>
                     </div>
                     <a href="{{ route('logout') }}" 
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 

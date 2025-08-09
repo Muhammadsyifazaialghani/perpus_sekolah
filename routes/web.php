@@ -48,6 +48,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard/book/{id}', [UserDashboardController::class, 'showBook'])->name('dashboard.book.detail');
     Route::get('/dashboard/book/{id}/borrow', [UserDashboardController::class, 'borrowForm'])->name('dashboard.book.borrow.form');
     Route::post('/dashboard/book/{id}/borrow', [UserDashboardController::class, 'confirmBorrow'])->name('dashboard.book.borrow.confirm');
+
+    // Route untuk riwayat peminjaman
+    Route::get('/dashboard/borrow-history', [UserDashboardController::class, 'borrowHistory'])->name('dashboard.borrow.history');
 });
 
 // Admin dashboard route - ensure admin role and redirect non-admin users
