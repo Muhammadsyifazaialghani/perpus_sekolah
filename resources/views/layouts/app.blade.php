@@ -5,19 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perpustakaan Sekolah</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header class="main-header">
         <div class="header-container">
-            <h1>Perpustakaan Sekolah</h1>
+            <div class="logo-section">
+                <i class="fas fa-book-open logo-icon"></i>
+                <h1>Perpustakaan Sekolah</h1>
+            </div>
             <nav class="nav-menu">
-                <a href="{{ route('dashboard') }}" class="nav-link">Buku</a>
-                <a href="#" class="nav-link">Kategori</a>
-                <a href="#" class="nav-link">Penulis</a>
-                <a href="{{ route('return.book') }}" class="nav-link">Pengembalian</a>
+                <a href="{{ route('dashboard') }}" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span>Buku</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-tags"></i>
+                    <span>Kategori</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Penulis</span>
+                </a>
+                <a href="{{ route('return.book') }}" class="nav-link">
+                    <i class="fas fa-undo-alt"></i>
+                    <span>Pengembalian</span>
+                </a>
             </nav>
             <div class="profile-section">
                 <button class="profile-button" onclick="toggleDropdown()">
+                    <div class="profile-avatar">
+                        <span class="avatar-initial">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                    </div>
                     <span class="user-name">{{ auth()->user()->name }}</span>
                     <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -25,13 +44,31 @@
                 </button>
                 <div id="profile-dropdown" class="dropdown-menu">
                     <div class="dropdown-header">
-                        <p class="user-fullname">{{ auth()->user()->name }}</p>
-                        <p class="user-email">{{ auth()->user()->email }}</p>
+                        <div class="profile-info">
+                            <div class="profile-avatar-large">
+                                <span class="avatar-initial-large">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                            </div>
+                            <div class="user-details">
+                                <p class="user-fullname">{{ auth()->user()->name }}</p>
+                                <p class="user-email">{{ auth()->user()->email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown-actions">
+                        <a href="#" class="dropdown-action-link">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Pengaturan Akun</span>
+                        </a>
+                        <a href="#" class="dropdown-action-link">
+                            <i class="fas fa-history"></i>
+                            <span>Riwayat Peminjaman</span>
+                        </a>
                     </div>
                     <a href="{{ route('logout') }}" 
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
                        class="logout-link">
-                        Logout
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
@@ -52,16 +89,20 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
             color: #333;
             line-height: 1.6;
         }
+        
         /* Header Styles */
         .main-header {
-            background-color: #0080ffff;
+            background: linear-gradient(135deg, #0066cc, #0052a3);
             color: white;
             padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .header-container {
             max-width: 1200px;
@@ -71,38 +112,58 @@
             justify-content: space-between;
             align-items: center;
         }
-        .main-header h1 {
+        
+        /* Logo Section */
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
             font-size: 1.8rem;
+            color: #ffffff;
+        }
+        .main-header h1 {
+            font-size: 1.6rem;
             font-weight: 600;
             letter-spacing: 0.5px;
-            margin-right: 2rem;
         }
         
         /* Navigation Menu */
         .nav-menu {
             display: flex;
-            gap: 1.5rem;
-            flex-grow: 1;
-            justify-content: center;
+            gap: 0.5rem;
         }
         
         .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
         }
         
         .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link i {
+            font-size: 1rem;
+        }
+        
+        .nav-link span {
+            font-size: 0.95rem;
         }
         
         /* Profile Section */
         .profile-section {
             position: relative;
-            margin-left: 1rem;
         }
         .profile-button {
             display: flex;
@@ -112,13 +173,29 @@
             border: none;
             color: white;
             cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
+            padding: 6px 12px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
         }
         .profile-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
         }
+        
+        /* Profile Avatar */
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .avatar-initial {
+            font-size: 0.9rem;
+        }
+        
         .user-name {
             font-size: 0.9rem;
             font-weight: 500;
@@ -132,77 +209,163 @@
             position: absolute;
             top: 100%;
             right: 0;
-            margin-top: 8px;
-            width: 250px;
+            margin-top: 10px;
+            width: 280px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             z-index: 1000;
             display: none;
-            border: 1px solid #e0e0e0;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.08);
         }
         .dropdown-menu.show {
             display: block;
-            animation: fadeIn 0.2s ease;
+            animation: dropdownFade 0.3s ease;
         }
-        .dropdown-header {
-            padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .user-fullname {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 3px;
-        }
-        .user-email {
-            font-size: 0.85rem;
-            color: #666;
-        }
-        .logout-link {
-            display: block;
-            padding: 12px 15px;
-            color: #e74c3c;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            border-radius: 0 0 8px 8px;
-        }
-        .logout-link:hover {
-            background-color: #f8f9fa;
-        }
-        /* Main Content */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        /* Animations */
-        @keyframes fadeIn {
+        
+        @keyframes dropdownFade {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-15px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+        
+        .dropdown-header {
+            background: linear-gradient(135deg, #0066cc, #0052a3);
+            color: white;
+            padding: 20px;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .profile-avatar-large {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .avatar-initial-large {
+            font-size: 1.4rem;
+        }
+        
+        .user-details {
+            flex: 1;
+        }
+        
+        .user-fullname {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .dropdown-actions {
+            padding: 8px 0;
+        }
+        
+        .dropdown-action-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+        
+        .dropdown-action-link:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .dropdown-action-link i {
+            color: #6c757d;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .logout-link:hover {
+            background-color: #fff5f5;
+        }
+        
+        .logout-link i {
+            font-size: 1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
         /* Responsive */
+        @media (max-width: 992px) {
+            .nav-menu {
+                gap: 0.3rem;
+            }
+            
+            .nav-link {
+                padding: 0.5rem 0.8rem;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+        }
+        
         @media (max-width: 768px) {
             .header-container {
                 padding: 0 15px;
             }
+            
+            .logo-section {
+                gap: 8px;
+            }
+            
+            .logo-icon {
+                font-size: 1.5rem;
+            }
+            
             .main-header h1 {
-                font-size: 1.4rem;
-                margin-right: 1rem;
+                font-size: 1.3rem;
             }
-            .nav-menu {
-                gap: 1rem;
-            }
+            
             .user-name {
                 display: none;
             }
+            
             .dropdown-menu {
-                width: 200px;
+                width: 260px;
                 right: -10px;
             }
         }
@@ -212,50 +375,71 @@
                 flex-wrap: wrap;
             }
             
-            .main-header h1 {
+            .logo-section {
                 width: 100%;
-                margin-bottom: 0.5rem;
-                margin-right: 0;
-                text-align: center;
+                justify-content: center;
+                margin-bottom: 10px;
             }
             
             .nav-menu {
                 order: 3;
                 width: 100%;
                 justify-content: space-around;
-                margin-top: 0.5rem;
-                padding-top: 0.5rem;
+                margin-top: 10px;
+                padding-top: 10px;
                 border-top: 1px solid rgba(255, 255, 255, 0.2);
             }
             
             .profile-section {
                 order: 2;
-                margin-left: 0;
+                position: absolute;
+                top: 15px;
+                right: 20px;
+            }
+            
+            .main-content {
+                padding-top: 80px;
             }
         }
         
         @media (max-width: 480px) {
             .main-header h1 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
+            
             .nav-link {
-                font-size: 0.85rem;
-                padding: 0.4rem 0.5rem;
+                padding: 0.4rem 0.6rem;
+            }
+            
+            .dropdown-menu {
+                width: 240px;
             }
         }
     </style>
     <script>
         function toggleDropdown() {
             const dropdown = document.getElementById('profile-dropdown');
+            const icon = document.querySelector('.dropdown-icon');
+            
             dropdown.classList.toggle('show');
+            
+            // Rotate icon when dropdown is open
+            if (dropdown.classList.contains('show')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
         }
+        
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const profileSection = document.querySelector('.profile-section');
             const dropdown = document.getElementById('profile-dropdown');
+            const icon = document.querySelector('.dropdown-icon');
             
             if (!profileSection.contains(event.target)) {
                 dropdown.classList.remove('show');
+                icon.style.transform = 'rotate(0deg)';
             }
         });
     </script>
