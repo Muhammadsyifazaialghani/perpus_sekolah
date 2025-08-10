@@ -15,6 +15,11 @@ class BookResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
+    public static function canCreate(): bool
+    {
+        return true;
+    }
+
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form

@@ -13,5 +13,8 @@ class Book extends Model
         'title',
         'author',
         'available',
+        'description',
+        'isbn',
+        'published_year',
     ];
 }

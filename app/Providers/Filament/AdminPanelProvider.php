@@ -23,22 +23,30 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-        ->default()
+            ->default()
             ->id('admin')
             ->path('admin')
+            ->login() // kalau mau custom login bisa ubah di sini
             ->colors([
                 'primary' => Color::Amber,
             ])
+            // Temukan semua resources, pages, dan widgets di folder Admin
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
+            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+            
+            // Halaman default tambahan
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+            
+            // Widget default tambahan
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
+            
+            // Middleware global
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -49,13 +57,18 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \App\Http\Middleware\AdminRoleMiddleware::class,
+                \App\Http\Middleware\AdminRoleMiddleware::class, // untuk filter role admin
             ])
+            
+            // Middleware autentikasi khusus Filament
             ->authMiddleware([
                 Authenticate::class,
             ])
+            
+            // Resource tambahan (opsional jika mau manual)
             ->resources([
                 \App\Filament\Admin\Resources\BookResource::class,
+                \App\Filament\Admin\Resources\CategoryResource::class,
             ]);
     }
 }
