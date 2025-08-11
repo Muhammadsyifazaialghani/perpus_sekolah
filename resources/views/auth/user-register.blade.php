@@ -4,14 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>User Registration</title>
+    {{-- Memuat file CSS eksternal Laravel --}}
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/simple-styles.css') }}" rel="stylesheet" />
 </head>
 <style>
     /* Skema Warna yang sama dengan formulir login */
     :root {
-      --rgb-primary: 52, 152, 219;
-      --rgb-secondary: 26, 188, 156;
-      --rgb-accent: 155, 89, 182;
-      --rgb-bg: 29, 41, 52;
+      --rgb-primary: 255, 193, 7;      /* Emas hangat */
+      --rgb-secondary: 13, 110, 253;   /* Biru yang dinamis */
+      --rgb-accent: 108, 117, 125;     /* Abu-abu lembut */
+      --rgb-bg: 33, 37, 41;            /* Abu-abu tua gelap */
       --transition-speed: 0.3s;
     }
 
@@ -69,7 +73,7 @@
       background: linear-gradient(90deg,
         rgb(var(--rgb-primary)),
         rgb(var(--rgb-secondary)),
-        rgb(var(--rgb-accent)));
+        rgb(var(--rgb-primary)));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -215,40 +219,43 @@
     <div class="register-container">
         <div class="register-card">
             <h2 class="form-title">Daftar Akun Baru</h2>
-    @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+            @if ($errors->any())
+                <div class="error-message">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 <form method="POST" action="{{ route('register.post') }}">
         @csrf
         <div class="form-group">
-        <label for="form-label">Nama Lengkap</label><br />
-        <input type="text" id="name" name="name" class="form-input-lg" value="{{ old('name') }}" placeholder="Masukkan nama Anda" required> <br />
+        <label for="name" class="form-label">👤 Nama Lengkap</label>
+        <input type="text" id="name" name="name" class="form-input-lg" value="{{ old('name') }}" placeholder="Masukkan nama Anda" required>
         </div>
 
         <div class="form-group">
-        <label for="form-label">Alamat Email</label><br />
-        <input type="email" id="email" name="email" class="form-input-lg" value="{{ old('email') }}" placeholder="Masukkan email Anda" required> <br />
+        <label for="email" class="form-label">📧 Alamat Email</label>
+        <input type="email" id="email" name="email" class="form-input-lg" value="{{ old('email') }}" placeholder="Masukkan email Anda" required>
         </div>
 
         <div class="form-group">
-        <label for="form-label">Kata Sandi</label><br />
-        <input type="password" id="password" name="password" class="form-input-lg" placeholder="Buat kata sandi" required> <br />
+        <label for="password" class="form-label">🔐 Kata Sandi</label>
+        <input type="password" id="password" name="password" class="form-input-lg" placeholder="Buat kata sandi" required>
         </div>
 
         <div class="form-group">
-        <label for="form-label">Konfirmasi Kata Sandi</label><br />
-        <input type="password" id="password_confirmation" name="password_confirmation" class="form-input-lg" placeholder="Ulangi kata sandi" required> <br />
+        <label for="password_confirmation" class="form-label">🔒 Konfirmasi Kata Sandi</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" class="form-input-lg" placeholder="Ulangi kata sandi" required>
         </div>
         <button type="submit" class="action-button">Daftar</button>
     </form>
-     <a href="{{ route('login') }}" class="action-button">
-                    Sudah punya akun? Login sekarang
-                </a>
+    <div class="login-section">
+        Sudah punya akun?
+        <a href="{{ route('login') }}" class="login-link">Login sekarang</a>
+    </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -11,14 +11,14 @@
 
     {{-- CSS Kustom untuk Halaman Login --}}
     <style>
-        /* Variabel CSS untuk kontrol tema RGB */
+        /* Variabel CSS untuk kontrol tema RGB yang baru */
        :root {
-      --rgb-primary: 52, 152, 219;   /* Biru cerah yang menenangkan */
-      --rgb-secondary: 26, 188, 156; /* Hijau toska yang harmonis */
-      --rgb-accent: 155, 89, 182;    /* Ungu sebagai aksen */
-      --rgb-bg: 29, 41, 52;         /* Latar belakang biru tua gelap */
-      --transition-speed: 0.3s;
-    }
+            --rgb-primary: 255, 193, 7;      /* Emas hangat */
+            --rgb-secondary: 13, 110, 253;   /* Biru yang dinamis */
+            --rgb-accent: 108, 117, 125;     /* Abu-abu lembut */
+            --rgb-bg: 33, 37, 41;            /* Abu-abu tua gelap */
+            --transition-speed: 0.3s;
+        }
 
     /* Reset dan gaya dasar */
     * {
@@ -80,13 +80,19 @@
       backdrop-filter: blur(5px);
     }
 
+    .logout-message.error-message {
+        background: rgba(220, 53, 69, 0.2);
+        color: #f8d7da;
+        border-left: 4px solid #dc3545;
+    }
+
     .form-title {
       font-size: 28px;
       margin-bottom: 30px;
       background: linear-gradient(90deg,
         rgb(var(--rgb-primary)),
         rgb(var(--rgb-secondary)),
-        rgb(var(--rgb-accent)));
+        rgb(var(--rgb-primary)));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -187,7 +193,7 @@
         <div class="login-card">
             <h2 class="form-title">Log in</h2>
             @if ($errors->any())
-                <div class="logout-message" style="background: rgba(220, 53, 69, 0.2); color: #f8d7da; border-left: 4px solid #dc3545;">
+                <div class="logout-message error-message">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -211,6 +217,7 @@
                     <input id="password" type="password" name="password" required class="form-input-lg" placeholder="Enter your password" />
                 </div>
                 <button type="submit" class="action-button">Login</button>
+            </form>
             </div>
         </div>
     </div>
