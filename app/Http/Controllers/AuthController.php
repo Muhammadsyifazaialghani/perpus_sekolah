@@ -63,7 +63,7 @@ class AuthController extends Controller
         $user = \App\Models\User::create($data);
         Log::info('User created: ', ['user' => $user]);
 
-        return redirect()->route('login')->with('success', 'Registrasi Berhasil.');
+        return redirect()->route('user.login')->with('success', 'Registrasi Berhasil.');
     }
 
     public function showAdminLogin()
@@ -130,7 +130,7 @@ class AuthController extends Controller
         if ($role === 'admin') {
             return redirect()->route('admin.login')->with('success', 'kamu berhasil logout.');
         } else {
-            return redirect()->route('login')->with('success', 'kamu berhasil logout.');
+            return redirect()->route('user.login')->with('success', 'kamu berhasil logout.');
         }
     }
 }

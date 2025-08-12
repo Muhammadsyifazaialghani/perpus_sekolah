@@ -18,7 +18,7 @@ class AdminRoleMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
-            return redirect()->route('dashboard')->with('error', 'Access denied. Admin privileges required.');
+            return redirect()->route('dashboard')->with('error', 'Akses ditolak. Hak istimewa admin diperlukan.');
         }
 
         return $next($request);

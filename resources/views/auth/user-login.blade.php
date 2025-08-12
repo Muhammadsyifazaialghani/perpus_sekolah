@@ -169,6 +169,18 @@
         .button-group {
             margin-top: 10px;
         }
+         .back-link {
+            display: block; /* Membuatnya menempati satu baris */
+            margin-top: 25px; /* Memberi jarak dari tombol di atasnya */
+            color: rgba(255, 255, 255, 0.6); /* Warna abu-abu yang soft */
+            text-decoration: none; /* Menghilangkan garis bawah */
+            font-size: 14px;
+            transition: color var(--transition-speed);
+        }
+
+        .back-link:hover {
+            color: white; /* Warna menjadi putih saat di-hover */
+        }
 
         /* Responsive design */
         @media (max-width: 768px) {
@@ -222,6 +234,7 @@
             <a href="{{ route('register') }}" class="action-button">
                 Daftar sekarang
             </a>
+            <a href="/login" class="back-link">← Kembali ke Beranda</a>
         </div>
     </div>
 </body>
