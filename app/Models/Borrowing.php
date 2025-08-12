@@ -18,6 +18,9 @@ class Borrowing extends Model
         'due_at',
         'returned_at',
         'status',
+        'admin_notes',
+        'return_notes',
+        'book_condition',
     ];
 
     public function user()

@@ -8,11 +8,12 @@
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white rounded-lg shadow-md">
                 <thead>
-                    <tr class="bg-blue-600 text-white">
+                    <tr class="bg-blue-600 text">
                         <th class="py-3 px-6 text-left">Judul Buku</th>
                         <th class="py-3 px-6 text-left">Tanggal Pinjam</th>
                         <th class="py-3 px-6 text-left">Tanggal Kembali</th>
                         <th class="py-3 px-6 text-left">Status</th>
+                        <th class="py-3 px-6 text-left">Keterangan Admin</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                                 <span class="text-gray-600 font-semibold">{{ ucfirst($borrowing->status) }}</span>
                             @endif
                         </td>
+                        <td class="py-4 px-6">{{ $borrowing->admin_notes ?? '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
