@@ -67,7 +67,7 @@ class BorrowingResource extends Resource
                             ->label('Catatan Admin')
                             ->rows(3),
                         
-                        Forms\Components\Textarea::make('user_notes')
+                        Forms\Components\Textarea::make('return_notes')
                             ->label('Catatan User')
                             ->rows(3),
                     ])

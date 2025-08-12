@@ -29,11 +29,16 @@
                                 <span class="text-green-600 font-semibold">Disetujui</span>
                             @elseif($borrowing->status == 'rejected')
                                 <span class="text-red-600 font-semibold">Ditolak</span>
+                            @elseif($borrowing->status == 'returned')
+                                <span class="text-gray-600 font-semibold">Dikembalikan</span>
                             @else
                                 <span class="text-gray-600 font-semibold">{{ ucfirst($borrowing->status) }}</span>
                             @endif
                         </td>
-                        <td class="py-4 px-6">{{ $borrowing->admin_notes ?? '-' }}</td>
+                        <td class="py-4 px-6">
+                            {{ $borrowing->admin_notes ?? '-' }}<br>
+                            <strong>Catatan User:</strong> {{ $borrowing->return_notes ?? '-' }}
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
