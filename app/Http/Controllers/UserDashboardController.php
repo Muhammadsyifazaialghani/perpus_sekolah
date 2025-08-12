@@ -102,4 +102,10 @@ class UserDashboardController extends Controller
 
         return view('user.borrow_history', compact('borrowings'));
     }
+
+    public function listCategories()
+    {
+        $categories = \App\Models\Category::paginate(10);
+        return view('user.categories', compact('categories'));
+    }
 }

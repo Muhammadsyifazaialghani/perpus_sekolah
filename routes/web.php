@@ -52,6 +52,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Route untuk riwayat peminjaman
     Route::get('/dashboard/borrow-history', [UserDashboardController::class, 'borrowHistory'])->name('dashboard.borrow.history');
+
+    // Route untuk daftar kategori
+    Route::get('/dashboard/categories', [UserDashboardController::class, 'listCategories'])->name('dashboard.categories');
 });
 
 // Admin dashboard route - ensure admin role and redirect non-admin users

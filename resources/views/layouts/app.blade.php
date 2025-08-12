@@ -19,7 +19,7 @@
                     <i class="fas fa-book"></i>
                     <span>Buku</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route ('dashboard.categories') }}" class="nav-link">
                     <i class="fas fa-tags"></i>
                     <span>Kategori</span>
                 </a>
