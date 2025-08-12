@@ -9,7 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/return/book', [AuthController::class, 'returnBook'])->name('return.book');    
+Route::get('/return/book', [App\Http\Controllers\UserDashboardController::class, 'returnBookForm'])->name('return.book');    
 
 // Login options page
 Route::get('/login', function () {
@@ -55,6 +55,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Route untuk daftar kategori
     Route::get('/dashboard/categories', [UserDashboardController::class, 'listCategories'])->name('dashboard.categories');
+
+    // Route untuk pengembalian buku
+    Route::get('/dashboard/return-book', [UserDashboardController::class, 'returnBookForm'])->name('dashboard.return.form');
+    Route::post('/dashboard/return-book', [UserDashboardController::class, 'processReturn'])->name('dashboard.return.process');
 });
 
 // Admin dashboard route - ensure admin role and redirect non-admin users

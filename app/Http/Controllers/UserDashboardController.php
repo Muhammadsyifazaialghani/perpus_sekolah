@@ -108,4 +108,57 @@ class UserDashboardController extends Controller
         $categories = \App\Models\Category::paginate(10);
         return view('user.categories', compact('categories'));
     }
+
+    public function returnBookForm()
+    {
+        $user = auth()->user();
+        $borrowings = \App\Models\Borrowing::with('book')
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['approved', 'borrowed'])
+            ->get();
+        
+        return view('user.return_book', compact('borrowings'));
+    }
+
+    public function processReturn(Request $request)
+    {
+        $request->validate([
+            'borrowing_id' => 'required|exists:borrowings,id',
+            'return_date' => 'required|date',
+            'book_condition' => 'required|in:baik,rusak_ringan,rusak_berat,hilang',
+            'notes' => 'nullable|string|max:500'
+        ]);
+
+        $borrowing = \App\Models\Borrowing::findOrFail($request->borrowing_id);
+        
+        // Pastikan ini adalah peminjaman milik user yang login
+        if ($borrowing->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk pengembalian ini.');
+        }
+
+        // Update status pengembalian
+        $borrowing->returned_at = $request->return_date;
+        $borrowing->status = 'returned';
+        $borrowing->book_condition = $request->book_condition;
+        $borrowing->return_notes = $request->notes;
+        $borrowing->save();
+
+        // Update ketersediaan buku
+        $book = $borrowing->book;
+        $book->available = true;
+        $book->save();
+
+        // Hitung denda jika terlambat
+        $dueDate = new \DateTime($borrowing->due_at);
+        $returnDate = new \DateTime($request->return_date);
+        
+        if ($returnDate > $dueDate) {
+            $daysLate = $returnDate->diff($dueDate)->days;
+            $fine = $daysLate * 1000; // Rp 1.000 per hari
+            
+            return redirect()->route('dashboard')->with('success', 'Buku berhasil dikembalikan. Denda keterlambatan: Rp ' . number_format($fine));
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Buku berhasil dikembalikan tepat waktu!');
+    }
 }
