@@ -25,10 +25,13 @@ class CategoryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Nama Kategori'),
                 Forms\Components\Textarea::make('description')
                     ->required()
-                    ->maxLength(65535),
+                    ->maxLength(65535)
+                    ->label('Deskripsi')
+                    ->rows(5),
             ]);
     }
 
@@ -36,8 +39,16 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('description')->limit(50),
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Nama Kategori'),
+                Tables\Columns\TextColumn::make('description')
+                    ->limit(50)
+                    ->label('Deskripsi'),
+                Tables\Columns\TextColumn::make('books_count')
+                    ->counts('books')
+                    ->label('Jumlah Buku'),
             ])
             ->filters([
                 //
