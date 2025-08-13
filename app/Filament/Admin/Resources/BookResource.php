@@ -45,6 +45,18 @@ class BookResource extends Resource
                 Forms\Components\TextInput::make('location')
                     ->maxLength(255)
                     ->label('Lokasi'),
+                Forms\Components\FileUpload::make('cover_image')
+                    ->label('Gambar Sampul')
+                    ->image()
+                    ->required()
+                    ->maxSize(5120) // 5MB
+                    ->imageResizeMode('contain')
+                    ->imageResizeTargetWidth(800)
+                    ->imageResizeTargetHeight(600)
+                    ->imageResizeUpscale(false)
+                    ->preserveFilenames()
+                    ->uploadProgressIndicatorPosition('right')
+                    ->helperText('Maksimum 5MB. Gambar akan otomatis di-resize ke 800x600px untuk optimasi.'),
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name')
                     ->required()
