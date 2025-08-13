@@ -18,6 +18,9 @@ class Book extends Model
         'isbn',
         'published_year',
         'category_id',
+        'year_published',
+        'publisher',
+        'location',
     ];
 
     public function category(): BelongsTo

@@ -34,10 +34,21 @@ class BookResource extends Resource
                     ->maxLength(65535),
                 Forms\Components\TextInput::make('isbn')
                     ->maxLength(13),
-                Forms\Components\TextInput::make('published_year')
+                Forms\Components\TextInput::make('year_published')
                     ->numeric()
                     ->minValue(1000)
-                    ->maxValue(date('Y')),
+                    ->maxValue(date('Y'))
+                    ->label('Tahun Terbit'),
+                Forms\Components\TextInput::make('publisher')
+                    ->maxLength(255)
+                    ->label('Penerbit'),
+                Forms\Components\TextInput::make('location')
+                    ->maxLength(255)
+                    ->label('Lokasi'),
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category', 'name')
+                    ->required()
+                    ->label('Kategori'),
             ]);
     }
 
@@ -48,7 +59,9 @@ class BookResource extends Resource
                 Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('author')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('isbn'),
-                Tables\Columns\TextColumn::make('published_year')->label('Year'),
+                Tables\Columns\TextColumn::make('year_published')->label('Tahun Terbit'),
+                Tables\Columns\TextColumn::make('publisher')->label('Penerbit'),
+                Tables\Columns\TextColumn::make('location')->label('Lokasi'),
             ])
             ->filters([
                 //

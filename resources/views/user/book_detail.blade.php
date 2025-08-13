@@ -282,7 +282,7 @@
                             <i class="bi bi-book icon"></i>
                             <h3>Kategori</h3>
                         </div>
-                        <p>{{ $book->category ?? 'Tidak diketahui' }}</p>
+                        <p>{{ $book->category->name ?? 'Tidak diketahui' }}</p>
                     </div>
                     
                     <div class="detail-card">
