@@ -290,7 +290,7 @@
                             <i class="bi bi-calendar3 icon"></i>
                             <h3>Tahun Terbit</h3>
                         </div>
-                        <p>{{ $book->publication_year ?? 'Tidak diketahui' }}</p>
+<p>{{ $book->year_published ?? 'Tidak diketahui' }}</p>
                     </div>
                     
                     <div class="detail-card">
