@@ -258,7 +258,7 @@
         <div class="main-content">
             <div class="image-section">
                 <div class="book-image-container">
-                    <img src="{{ $book->cover_image ?? 'https://picsum.photos/seed/' . $book->title . '/400/600.jpg' }}" alt="{{ $book->title }}" class="book-image">
+                    <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}" class="book-image">
                     
                     @if($book->available)
                         <div class="status-badge status-available">

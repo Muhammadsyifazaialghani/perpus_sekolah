@@ -70,29 +70,42 @@ class BookResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('author')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('isbn'),
-                Tables\Columns\TextColumn::make('year_published')->label('Tahun Terbit'),
-                Tables\Columns\TextColumn::make('publisher')->label('Penerbit'),
-                Tables\Columns\TextColumn::make('location')->label('Lokasi'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make()->label('Ubah'),
-                    Tables\Actions\DeleteAction::make()->label('Hapus'),
-                ]),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            Tables\Columns\ImageColumn::make('cover_image')
+                ->label('Sampul')
+                ->square() // biar rapi (opsional: bisa ->circular() kalau mau bulat)
+                ->size(60), // ukuran thumbnail di tabel
+            Tables\Columns\TextColumn::make('title')
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('author')
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('isbn'),
+            Tables\Columns\TextColumn::make('year_published')
+                ->label('Tahun Terbit'),
+            Tables\Columns\TextColumn::make('publisher')
+                ->label('Penerbit'),
+            Tables\Columns\TextColumn::make('location')
+                ->label('Lokasi'),
+        ])
+        ->filters([
+            //
+        ])
+        ->actions([
+            Tables\Actions\ActionGroup::make([
+                tables\Actions\ViewAction::make()->label('Lihat'),
+                Tables\Actions\EditAction::make()->label('Ubah'),
+                Tables\Actions\DeleteAction::make()->label('Hapus'),
+            ]),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
+}
+
 
     public static function getPages(): array
     {

@@ -421,8 +421,12 @@
             @foreach($books as $book)
                 <div class="book-card">
                     <div class="book-img-container">
-                        <!-- Menggunakan gambar placeholder berdasarkan judul buku -->
-                        <img src="https://picsum.photos/seed/{{ urlencode($book->title) }}/600/400.jpg" class="book-img" alt="{{ $book->title }}">
+                        <!-- Menggunakan cover image dari storage atau fallback ke placeholder -->
+                        @if($book->cover_image)
+                            <img src="{{ Storage::url($book->cover_image) }}" class="book-img" alt="{{ $book->title }}">
+                        @else
+                            <img src="https://picsum.photos/seed/{{ urlencode($book->title) }}/600/400.jpg" class="book-img" alt="{{ $book->title }}">
+                        @endif
                         @if($book->available)
                             <span class="status-badge badge-available">Tersedia</span>
                         @else
