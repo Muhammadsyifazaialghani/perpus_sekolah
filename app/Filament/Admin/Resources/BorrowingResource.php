@@ -28,31 +28,92 @@ class BorrowingResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Informasi Peminjaman')
+                Forms\Components\Section::make('Informasi Peminjam')
                     ->schema([
                         Forms\Components\Select::make('user_id')
                             ->relationship('user', 'name')
                             ->searchable()
+                            ->preload()
                             ->required()
-                            ->label('Nama Peminjam'),
+                            ->label('Peminjam Terdaftar')
+                            ->helperText('Pilih dari daftar user yang sudah terdaftar'),
                         
+                        Forms\Components\TextInput::make('borrower_name')
+                            ->label('Nama Lengkap')
+                            ->required()
+                            ->maxLength(255)
+                            ->helperText('Nama lengkap peminjam'),
+                        
+                        Forms\Components\TextInput::make('nis_nip')
+                            ->label('NIS/NIP')
+                            ->maxLength(50)
+                            ->helperText('Nomor identitas peminjam'),
+                        
+                        Forms\Components\TextInput::make('class_major')
+                            ->label('Kelas/Jurusan')
+                            ->maxLength(100)
+                            ->helperText('Kelas atau jurusan peminjam'),
+                        
+                        Forms\Components\TextInput::make('school_institution')
+                            ->label('Sekolah/Instansi')
+                            ->maxLength(255)
+                            ->helperText('Nama sekolah atau instansi'),
+                        
+                        Forms\Components\TextInput::make('contact_address')
+                            ->label('Alamat Kontak')
+                            ->maxLength(255)
+                            ->helperText('Alamat atau nomor telepon peminjam'),
+                    ])
+                    ->columns(2),
+                
+                Forms\Components\Section::make('Informasi Buku')
+                    ->schema([
                         Forms\Components\Select::make('book_id')
                             ->relationship('book', 'title')
                             ->searchable()
+                            ->preload()
                             ->required()
-                            ->label('Judul Buku'),
+                            ->label('Judul Buku')
+                            ->helperText('Pilih buku yang akan dipinjam'),
                         
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Jumlah')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(10)
+                            ->default(1)
+                            ->required()
+                            ->helperText('Jumlah buku yang dipinjam'),
+                        
+                        Forms\Components\TextInput::make('book_condition')
+                            ->label('Kondisi Buku')
+                            ->maxLength(255)
+                            ->helperText('Kondisi buku saat dipinjam'),
+                    ])
+                    ->columns(2),
+                
+                Forms\Components\Section::make('Jadwal Peminjaman')
+                    ->schema([
                         Forms\Components\DatePicker::make('borrowed_at')
                             ->label('Tanggal Pinjam')
-                            ->required(),
+                            ->required()
+                            ->default(now())
+                            ->helperText('Tanggal mulai peminjaman'),
                         
                         Forms\Components\DatePicker::make('due_at')
                             ->label('Tanggal Kembali')
-                            ->required(),
+                            ->required()
+                            ->default(now()->addDays(7))
+                            ->helperText('Tanggal harus dikembalikan'),
                         
                         Forms\Components\DatePicker::make('returned_at')
-                            ->label('Tanggal Dikembalikan'),
-                        
+                            ->label('Tanggal Dikembalikan')
+                            ->helperText('Kosongkan jika belum dikembalikan'),
+                    ])
+                    ->columns(3),
+                
+                Forms\Components\Section::make('Status & Catatan')
+                    ->schema([
                         Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Menunggu Persetujuan',
@@ -61,16 +122,20 @@ class BorrowingResource extends Resource
                                 'returned' => 'Dikembalikan',
                             ])
                             ->required()
-                            ->label('Status'),
+                            ->default('approved')
+                            ->label('Status Peminjaman'),
                         
                         Forms\Components\Textarea::make('admin_notes')
                             ->label('Catatan Admin')
-                            ->rows(3),
+                            ->rows(3)
+                            ->helperText('Catatan tambahan dari admin'),
                         
                         Forms\Components\Textarea::make('return_notes')
-                            ->label('Catatan User')
-                            ->rows(3),
+                            ->label('Catatan Pengembalian')
+                            ->rows(3)
+                            ->helperText('Catatan saat pengembalian'),
                     ])
+                    ->columns(1),
             ]);
     }
 
@@ -80,23 +145,22 @@ class BorrowingResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Nama Peminjam')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 
                 Tables\Columns\TextColumn::make('book.title')
                     ->label('Judul Buku')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                    
                 
                 Tables\Columns\TextColumn::make('borrowed_at')
                     ->label('Tanggal Pinjam')
-                    ->date()
-                    ->sortable(),
+                    ->date(),
+                    
                 
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Tanggal Kembali')
-                    ->date()
-                    ->sortable(),
+                    ->date(),
+                   
                 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
@@ -116,8 +180,8 @@ class BorrowingResource extends Resource
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Diajukan')
-                    ->dateTime()
-                    ->sortable(),
+                    ->dateTime(),
+                    
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
