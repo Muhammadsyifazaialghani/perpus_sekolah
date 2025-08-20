@@ -23,10 +23,10 @@
                     <i class="fas fa-tags"></i>
                     <span>Kategori</span>
                 </a>
-                <a href="{{ route('return.book') }}" class="nav-link">
+                <!-- <a href="{{ route('return.book') }}" class="nav-link">
                     <i class="fas fa-user-edit"></i>
                     <span>Penulis</span>
-                </a>
+                </a> -->
                 <a href="{{ route('return.book') }}" class="nav-link">
                     <i class="fas fa-undo-alt"></i>
                     <span>Pengembalian</span>
