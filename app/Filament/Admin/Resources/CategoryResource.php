@@ -59,7 +59,11 @@ class CategoryResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+               Tables\Actions\ActionGroup::make([
+                tables\Actions\ViewAction::make()->label('Lihat'),
+                Tables\Actions\EditAction::make()->label('Ubah'),
+                Tables\Actions\DeleteAction::make()->label('Hapus'),
+            ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
