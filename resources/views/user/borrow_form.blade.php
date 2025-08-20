@@ -12,10 +12,11 @@
         <!-- Info Buku -->
         <div class="p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100">
             <div class="flex items-center mb-4">
-                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-                    <!-- Icon placeholder -->
+                <div class="w-20 h-28 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
+                    <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}" 
+                         class="w-full h-full object-cover">
                 </div>
-                <div class="ml-4">
+                <div class="ml-4 flex-1">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-700">{{ $book->title }}</h2>
                     <p class="text-sm sm:text-base text-gray-600 font-medium">Penulis: {{ $book->author }}</p>
                 </div>
