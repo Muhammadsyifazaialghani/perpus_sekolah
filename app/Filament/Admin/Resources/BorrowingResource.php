@@ -136,6 +136,28 @@ class BorrowingResource extends Resource
                             ->helperText('Catatan saat pengembalian'),
                     ])
                     ->columns(1),
+                
+                Forms\Components\Section::make('Denda Keterlambatan')
+                    ->schema([
+                        Forms\Components\TextInput::make('fine_amount')
+                            ->label('Jumlah Denda (Rp)')
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->disabled(fn (?Borrowing $record) => $record && $record->fine_paid)
+                            ->helperText('Denda akan dihitung otomatis saat buku dikembalikan terlambat'),
+                        
+                        Forms\Components\Toggle::make('fine_paid')
+                            ->label('Denda Sudah Dibayar')
+                            ->disabled(fn (?Borrowing $record) => !$record || $record->fine_amount <= 0)
+                            ->helperText('Centang jika denda sudah dibayar'),
+                        
+                        Forms\Components\DateTimePicker::make('fine_paid_at')
+                            ->label('Tanggal Pembayaran Denda')
+                            ->disabled()
+                            ->helperText('Tanggal otomatis saat denda dibayar'),
+                    ])
+                    ->columns(2)
+                    ->visible(fn (?Borrowing $record) => $record && $record->status === 'returned'),
             ]);
     }
 
@@ -177,6 +199,21 @@ class BorrowingResource extends Resource
                         'rejected' => 'Ditolak',
                         'returned' => 'Dikembalikan',
                     }),
+                
+                Tables\Columns\TextColumn::make('fine_amount')
+                    ->label('Denda')
+                    ->money('IDR')
+                    ->color('danger')
+                    ->sortable(),
+                
+                Tables\Columns\IconColumn::make('fine_paid')
+                    ->label('Status Denda')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->tooltip(fn (?Borrowing $record) => $record->fine_paid ? 'Denda sudah dibayar' : 'Denda belum dibayar'),
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Diajukan')
@@ -230,6 +267,20 @@ class BorrowingResource extends Resource
                             ->rows(3),
                     ])
                     ->requiresConfirmation(),
+                
+                Tables\Actions\Action::make('pay_fine')
+                    ->label('Bayar Denda')
+                    ->icon('heroicon-o-currency-dollar')
+                    ->color('warning')
+                    ->action(function (Borrowing $record) {
+                        $record->markFineAsPaid();
+                    })
+                    ->modalDescription(fn (?Borrowing $record) => 'Apakah Anda yakin denda sebesar Rp ' . number_format($record->fine_amount, 0, ',', '.') . ' sudah dibayar?')
+                    ->visible(fn (?Borrowing $record) => $record->hasUnpaidFine())
+                    ->requiresConfirmation()
+                    ->modalHeading('Konfirmasi Pembayaran Denda')
+                    // ->modalDescription('Apakah Anda yakin denda sebesar Rp) ' . number_format($record->fine_amount) . ' sudah dibayar?')
+                    ->modalSubmitActionLabel('Ya, Sudah Dibayar'),
                 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
