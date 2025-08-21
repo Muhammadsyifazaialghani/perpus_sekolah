@@ -231,8 +231,8 @@
 <form method="POST" action="{{ route('register.post') }}">
         @csrf
         <div class="form-group">
-        <label for="name" class="form-label">👤 Nama Lengkap</label>
-        <input type="text" id="name" name="name" class="form-input-lg" value="{{ old('name') }}" placeholder="Masukkan nama Anda" required>
+        <label for="username" class="form-label">👤 Nama Lengkap</label>
+        <input type="text" id="username" name="username" class="form-input-lg" value="{{ old('name') }}" placeholder="Masukkan nama Anda" required>
         </div>
 
         <div class="form-group">

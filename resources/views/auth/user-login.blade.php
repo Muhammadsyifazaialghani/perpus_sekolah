@@ -222,8 +222,8 @@
             <form method="POST" action="{{ route('login.post') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="email" class="form-label">👤 Username</label>
-                    <input id="email" type="email" name="email" required autofocus class="form-input-lg" placeholder="Enter your username" />
+                    <label for="username" class="form-label">👤 Username</label>
+                    <input id="username" type="text" name="username" required autofocus class="form-input-lg" placeholder="Enter your username" />
                 </div>
                 <div class="form-group">
                     <label for="password" class="form-label">🔐 Password</label>

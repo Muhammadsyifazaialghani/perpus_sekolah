@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
             // Widget default tambahan
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             
             // Middleware global
