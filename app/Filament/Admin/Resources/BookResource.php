@@ -14,7 +14,7 @@ class BookResource extends Resource
     protected static ?string $model = Book::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
-    protected static ?string $navigationGroup = 'Manajemen';
+    protected static ?string $navigationGroup = 'Manajemen Buku';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'Buku';
     protected static ?string $modelLabel = 'Buku';

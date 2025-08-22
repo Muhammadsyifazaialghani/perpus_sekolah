@@ -234,7 +234,7 @@
             <a href="{{ route('register') }}" class="action-button">
                 Daftar sekarang
             </a>
-            <a href="/login" class="back-link">← Kembali ke Beranda</a>
+            <a href="/login" class="back-link">← Kembali ke Login</a>
         </div>
     </div>
 </body>

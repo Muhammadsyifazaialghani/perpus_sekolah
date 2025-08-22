@@ -120,18 +120,22 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $role = Auth::user() ? Auth::user()->role : null;
+        // Periksa apakah user sudah login sebelum melakukan logout
+        if (Auth::check()) {
+            $role = Auth::user()->role;
+            
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        if ($role === 'admin') {
-            return redirect()->route('admin.login')->with('success', 'kamu berhasil logout.');
-        } else {
-            return redirect()->route('user.login')->with('success', 'kamu berhasil logout.');
+            if ($role === 'admin') {
+                return redirect()->route('admin.login')->with('success', 'kamu berhasil logout.');
+            } else {
+                return redirect()->route('user.login')->with('success', 'kamu berhasil logout.');
+            }
         }
+
+        // Jika user tidak login, redirect ke halaman login
+        return redirect()->route('login')->with('error', 'Anda belum login.');
     }
 }

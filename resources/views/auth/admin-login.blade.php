@@ -229,7 +229,7 @@
                     <input id="password" type="password" name="password" required class="form-input-lg" placeholder="Enter your password" />
                 </div>
                 <button type="submit" class="action-button">Login</button>
-                <a href="/login" class="back-link">← Kembali ke Beranda</a>
+                <a href="/login" class="back-link">← Kembali ke Login</a>
             </form>
             </div>
         </div>

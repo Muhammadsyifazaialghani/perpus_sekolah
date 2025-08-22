@@ -19,7 +19,7 @@ Route::get('/login', function () {
 // User login routes
 Route::get('/user/login', [AuthController::class, 'showUserLogin'])->name('user.login');
 Route::post('/user/login', [AuthController::class, 'userLogin'])->name('login.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // User register routes
 Route::get('/register', [AuthController::class, 'showUserRegister'])->name('register');
@@ -28,7 +28,7 @@ Route::post('/register', [AuthController::class, 'userRegister'])->name('registe
 // Admin login routes
 Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.post');
-Route::post('/admin/logout', [AuthController::class, 'logout'])->name('filament.admin.auth.logout');
+Route::post('/admin/logout', [AuthController::class, 'logout'])->middleware('auth')->name('filament.admin.auth.logout');
 
 // Filament admin logout route to fix RouteNotFoundException
 // Removed duplicate route to avoid redundancy

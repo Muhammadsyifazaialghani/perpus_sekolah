@@ -21,7 +21,7 @@ class BorrowingResource extends Resource
     protected static ?string $navigationLabel = 'Peminjaman';
     protected static ?string $modelLabel = 'Peminjaman';
     protected static ?string $pluralModelLabel = 'Peminjaman';
-    protected static ?string $navigationGroup = 'Manajemen';
+    protected static ?string $navigationGroup = 'Manajemen Anggota';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
