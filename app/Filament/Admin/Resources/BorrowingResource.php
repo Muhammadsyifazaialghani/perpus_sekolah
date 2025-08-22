@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
 
 class BorrowingResource extends Resource
 {
@@ -21,6 +22,16 @@ class BorrowingResource extends Resource
     protected static ?string $navigationLabel = 'Peminjaman';
     protected static ?string $modelLabel = 'Peminjaman';
     protected static ?string $pluralModelLabel = 'Peminjaman';
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::active()->count();
+    }
+    
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'primary';
+    }
     protected static ?string $navigationGroup = 'Manajemen Anggota';
     protected static ?int $navigationSort = 3;
 
@@ -218,6 +229,22 @@ class BorrowingResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Diajukan')
                     ->dateTime(),
+                
+                Tables\Columns\TextColumn::make('days_remaining')
+                    ->label('Hari Tersisa')
+                    ->state(fn (Borrowing $record) => $record->days_remaining)
+                    ->color(fn (Borrowing $record) => $record->is_overdue ? 'danger' : ($record->days_remaining <= 3 ? 'warning' : 'success'))
+                    ->sortable()
+                    ->tooltip(fn (Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : ($record->days_remaining . ' hari tersisa')),
+                
+                Tables\Columns\IconColumn::make('is_overdue')
+                    ->label('Status')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-exclamation-triangle')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->trueColor('danger')
+                    ->falseColor('success')
+                    ->tooltip(fn (Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : 'Masih dalam waktu'),
                     
             ])
             ->filters([
@@ -233,6 +260,11 @@ class BorrowingResource extends Resource
                 Tables\Filters\Filter::make('pending')
                     ->query(fn (Builder $query): Builder => $query->where('status', 'pending'))
                     ->label('Menunggu Persetujuan'),
+                
+                Tables\Filters\Filter::make('active')
+                    ->label('Peminjaman Aktif')
+                    ->query(fn (Builder $query): Builder => $query->active())
+                    ->default(),
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
@@ -281,6 +313,36 @@ class BorrowingResource extends Resource
                     ->modalHeading('Konfirmasi Pembayaran Denda')
                     // ->modalDescription('Apakah Anda yakin denda sebesar Rp) ' . number_format($record->fine_amount) . ' sudah dibayar?')
                     ->modalSubmitActionLabel('Ya, Sudah Dibayar'),
+                
+                Tables\Actions\Action::make('return_book')
+                    ->label('Kembalikan Buku')
+                    ->icon('heroicon-o-arrow-left-circle')
+                    ->color('primary')
+                    ->action(function (Borrowing $record, array $data) {
+                        $record->update([
+                            'returned_at' => now(),
+                            'return_notes' => $data['return_notes'] ?? null,
+                            'book_condition' => $data['book_condition'] ?? null,
+                        ]);
+                        
+                        // Update fine if applicable
+                        $record->updateFine();
+                    })
+                    ->visible(fn (Borrowing $record) => $record->status === 'approved' && !$record->returned_at)
+                    ->form([
+                        Forms\Components\Textarea::make('return_notes')
+                            ->label('Catatan Pengembalian')
+                            ->rows(3)
+                            ->helperText('Catatan kondisi buku saat dikembalikan'),
+                        
+                        Forms\Components\TextInput::make('book_condition')
+                            ->label('Kondisi Buku Saat Dikembalikan')
+                            ->maxLength(255)
+                            ->helperText('Kondisi buku saat dikembalikan'),
+                    ])
+                    ->requiresConfirmation()
+                    ->modalHeading('Konfirmasi Pengembalian Buku')
+                    ->modalSubmitActionLabel('Ya, Kembalikan'),
                 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

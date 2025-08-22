@@ -105,4 +105,43 @@ class Borrowing extends Model
         
         return 0;
     }
+
+    /**
+     * Scope untuk peminjaman aktif (disetujui dan belum dikembalikan)
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'approved')
+                    ->whereNull('returned_at');
+    }
+
+    /**
+     * Hitung hari tersisa sebelum jatuh tempo
+     */
+    public function getDaysRemainingAttribute(): int
+    {
+        if ($this->due_at && !$this->returned_at) {
+            $dueDate = Carbon::parse($this->due_at);
+            $today = Carbon::today();
+            
+            return max(0, $today->diffInDays($dueDate, false));
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Cek apakah peminjaman sudah terlambat
+     */
+    public function getIsOverdueAttribute(): bool
+    {
+        if ($this->due_at && !$this->returned_at) {
+            $dueDate = Carbon::parse($this->due_at);
+            $today = Carbon::today();
+            
+            return $today->gt($dueDate);
+        }
+        
+        return false;
+    }
 }
