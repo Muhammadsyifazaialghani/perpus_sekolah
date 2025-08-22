@@ -141,6 +141,18 @@ class UserDashboardController extends Controller
         $borrowing->status = 'returned';
         $borrowing->book_condition = $request->book_condition;
         $borrowing->return_notes = $request->notes;
+        
+        // Hitung dan simpan denda jika terlambat
+        $dueDate = new \DateTime($borrowing->due_at);
+        $returnDate = new \DateTime($request->return_date);
+        
+        if ($returnDate > $dueDate) {
+            $daysLate = $returnDate->diff($dueDate)->days;
+            $borrowing->fine_amount = $daysLate * 2000; // Rp 2.000 per hari
+        } else {
+            $borrowing->fine_amount = 0;
+        }
+        
         $borrowing->save();
 
         // Update ketersediaan buku
@@ -148,15 +160,8 @@ class UserDashboardController extends Controller
         $book->available = true;
         $book->save();
 
-        // Hitung denda jika terlambat
-        $dueDate = new \DateTime($borrowing->due_at);
-        $returnDate = new \DateTime($request->return_date);
-        
-        if ($returnDate > $dueDate) {
-            $daysLate = $returnDate->diff($dueDate)->days;
-            $fine = $daysLate * 1000; // Rp 1.000 per hari
-            
-            return redirect()->route('dashboard')->with('success', 'Buku berhasil dikembalikan. Denda keterlambatan: Rp ' . number_format($fine));
+        if ($borrowing->fine_amount > 0) {
+            return redirect()->route('dashboard')->with('success', 'Buku berhasil dikembalikan. Denda keterlambatan: Rp ' . number_format($borrowing->fine_amount, 0, ',', '.'));
         }
 
         return redirect()->route('dashboard')->with('success', 'Buku berhasil dikembalikan tepat waktu!');

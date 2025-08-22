@@ -14,6 +14,7 @@
                         <th class="py-3 px-6 text-left">Tanggal Kembali</th>
                         <th class="py-3 px-6 text-left">Status</th>
                         <th class="py-3 px-6 text-left">Keterangan Admin</th>
+                        <th class="py-3 px-6 text-left">Denda</th>
                     </tr>
                 </thead>
                 <tbody>
