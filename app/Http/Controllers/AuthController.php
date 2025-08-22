@@ -25,7 +25,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
+        if (Auth::attempt(['name' => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
 
             if (Auth::user()->role !== 'user') {
@@ -74,25 +74,26 @@ class AuthController extends Controller
     public function adminLogin(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required','email'],
+            'username' => ['required','string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt(['name' => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
 
             if (Auth::user()->role !== 'admin') {
                 Auth::logout();
                 return back()->withErrors([
-                    'email' => 'Unauthorized access for admin login.',
+                    'username' => 'Unauthorized access for admin login.',
                 ]);
             }
 
-            return redirect()->intended(route('admin.dashboard'));
+            // Redirect langsung ke panel admin Filament (/admin)
+            return redirect()->intended('/admin');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'username' => 'Username atau password salah.',
         ]);
     }
 
