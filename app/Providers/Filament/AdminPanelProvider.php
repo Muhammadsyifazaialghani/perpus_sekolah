@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login() // kalau mau custom login bisa ubah di sini
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Blue,
             ])
             // Temukan semua resources, pages, dan widgets di folder Admin
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
