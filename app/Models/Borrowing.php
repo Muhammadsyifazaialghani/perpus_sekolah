@@ -144,4 +144,66 @@ class Borrowing extends Model
         
         return false;
     }
+
+    /**
+     * Scope untuk filter berdasarkan periode waktu
+     */
+    public function scopeDateRange($query, $startDate = null, $endDate = null)
+    {
+        if ($startDate) {
+            $query->whereDate('borrowed_at', '>=', $startDate);
+        }
+        
+        if ($endDate) {
+            $query->whereDate('borrowed_at', '<=', $endDate);
+        }
+        
+        return $query;
+    }
+
+    /**
+     * Scope untuk peminjaman yang sudah disetujui
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    /**
+     * Scope untuk peminjaman yang sudah dikembalikan
+     */
+    public function scopeReturned($query)
+    {
+        return $query->where('status', 'returned');
+    }
+
+    /**
+     * Hitung total peminjaman dalam periode tertentu
+     */
+    public static function getBorrowingCount($startDate = null, $endDate = null): int
+    {
+        return self::approved()
+            ->dateRange($startDate, $endDate)
+            ->count();
+    }
+
+    /**
+     * Hitung total pengembalian dalam periode tertentu
+     */
+    public static function getReturnCount($startDate = null, $endDate = null): int
+    {
+        return self::returned()
+            ->dateRange($startDate, $endDate)
+            ->count();
+    }
+
+    /**
+     * Hitung total denda dalam periode tertentu
+     */
+    public static function getTotalFines($startDate = null, $endDate = null): float
+    {
+        return self::returned()
+            ->dateRange($startDate, $endDate)
+            ->sum('fine_amount');
+    }
 }
