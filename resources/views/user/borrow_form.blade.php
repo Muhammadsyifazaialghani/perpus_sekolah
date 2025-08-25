@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Wadah utama disesuaikan agar pas di dalam layout dasbor --}}
-<div class="flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+{{-- Latar belakang gradien diubah sedikit untuk lebih cocok dengan tema biru --}}
+<div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-50 via-gray-50 to-blue-50 animate-fadeIn">
     
     <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-3xl">
         
         <div class="p-8 bg-gray-50 border-b border-gray-200">
             <h1 class="text-3xl font-bold text-center text-gray-800">Formulir Peminjaman</h1>
-        </div>
+            </div>
         
-        <div class="p-6">
+        <div class="p-6 bg-bl">
             <div class="flex items-start sm:items-center gap-5">
-                {{-- Ring warna biru untuk highlight --}}
+                {{-- Diubah: Ring warna menjadi biru --}}
                 <div class="w-24 h-36 rounded-lg overflow-hidden shadow-lg flex-shrink-0 border-4 border-white -mt-16 ring-4 ring-blue-200">
                     <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
                 </div>
@@ -27,25 +27,34 @@
             @csrf
             
             <div class="mb-8">
+                {{-- Diubah: Ikon menjadi biru --}}
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200 flex items-center gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     Detail Peminjam
                 </h3>
-                <div class="grid grid-cols-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
                     @php
-                        // Style untuk input fields
+                        // Diubah: Warna fokus menjadi biru
                         $inputClasses = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm focus:-translate-y-0.5 focus:shadow-lg";
                     @endphp
-                    <div>
-                        <label for="class_major" class="block text-sm font-medium text-gray-700 mb-1">Kelas / Jurusan</label>
-                        <select id="class_major" name="class_major" class="{{ $inputClasses }}" required>
-                            <option value="" disabled selected>Pilih salah satu</option>
-                            <option value="RPL (PPLG)">RPL (PPLG)</option>
-                            <option value="TKJ (TJKT)">TKJ (TJKT)</option>
-                            <option value="MM (DKV)">MM (DKV)</option>
-                            <option value="OTKP (MPLB)">OTKP (MPLB)</option>
-                        </select>
-                    </div>
+                                <label for="class_major" class="block text-sm font-medium text-gray-700 mb-1">Kelas / Jurusan</label>
+            <select id="class_major" name="class_major" class="{{ $inputClasses }}" required>
+                <option value="" disabled {{ !auth()->user()->class_major ? 'selected' : '' }}>
+                    Pilih salah satu
+                </option>
+                <option value="RPL (PPLG)" {{ auth()->user()->class_major == 'RPL (PPLG)' ? 'selected' : '' }}>
+                    RPL (PPLG)
+                </option>
+                <option value="TKJ (TJKT)" {{ auth()->user()->class_major == 'TKJ (TJKT)' ? 'selected' : '' }}>
+                    TKJ (TJKT)
+                </option>
+                <option value="MM (DKV)" {{ auth()->user()->class_major == 'MM (DKV)' ? 'selected' : '' }}>
+                    MM (DKV)
+                </option>
+                <option value="OTKP (MPLB)" {{ auth()->user()->class_major == 'OTKP (MPLB)' ? 'selected' : '' }}>
+                    OTKP (MPLB)
+                </option>
+            </select>
                 </div>
             </div>
             
@@ -61,10 +70,12 @@
             </div>
             
             <div class="flex flex-col sm:flex-row-reverse justify-between items-center gap-4 mt-8">
+                {{-- Diubah: Gradien tombol menjadi biru dan fokusnya juga biru --}}
                 <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 active:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                     Konfirmasi Pinjam
                 </button>
+                {{-- Diubah: Hover text menjadi biru --}}
                 <a href="{{ route('dashboard.book.detail', $book->id) }}" class="w-full sm:w-auto text-center text-gray-600 font-medium py-3 px-6 rounded-lg hover:bg-gray-100 hover:text-blue-600 transition-colors duration-300">
                     Kembali ke Detail Buku
                 </a>

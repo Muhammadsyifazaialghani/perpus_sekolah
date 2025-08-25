@@ -14,8 +14,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center flex-wrap sm:flex-nowrap">
             
             <div class="flex items-center gap-3 w-full justify-center sm:w-auto sm:justify-start mb-2 sm:mb-0">
-                <i class="fas fa-book-open text-3xl"></i>
-                <h1 class="text-2xl font-semibold tracking-wide">Perpustakaan Sekolah</h1>
+                <a href="{{ url('/') }}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <i class="fas fa-book-open text-3xl"></i>
+                    <h1 class="text-2xl font-semibold tracking-wide">Perpustakaan Sekolah</h1>
+                </a>
             </div>
 
             <nav class="flex gap-2 order-3 w-full justify-around mt-2 pt-2 border-t border-white/20 sm:order-none sm:w-auto sm:mt-0 sm:pt-0 sm:border-0">

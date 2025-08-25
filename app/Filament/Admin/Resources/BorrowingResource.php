@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\BorrowingResource\Pages;
 use App\Filament\Admin\Resources\BorrowingResource\RelationManagers;
 use App\Models\Borrowing;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -47,35 +48,35 @@ class BorrowingResource extends Resource
                             ->preload()
                             ->required()
                             ->label('Peminjam Terdaftar')
-                            ->helperText('Pilih dari daftar user yang sudah terdaftar'),
+                            ->helperText('Pilih dari daftar user yang sudah terdaftar')
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                if ($state) {
+                                    $user = \App\Models\User::find($state);
+                                    if ($user) {
+                                        $set('user_email', $user->email);
+                                        $set('class_major', $user->class_major); // Mengisi kelas/jurusan
+                                    }
+                                } else {
+                                    $set('user_email', null);
+                                    $set('class_major', null); 
+                                }
+                            }),
                         
-                        Forms\Components\TextInput::make('borrower_name')
-                            ->label('Nama Lengkap')
-                            ->required()
-                            ->maxLength(255)
-                            ->helperText('Nama lengkap peminjam'),
-                        
-                        Forms\Components\TextInput::make('nis_nip')
-                            ->label('NIS/NIP')
-                            ->maxLength(50)
-                            ->helperText('Nomor identitas peminjam'),
+                       Forms\Components\TextInput::make('user_email')
+                            ->label('Email Peminjam')
+                            ->email()
+                            ->readOnly()
+                            ->dehydrated(false)
+                            ->helperText('Email akan terisi otomatis.'),
                         
                         Forms\Components\TextInput::make('class_major')
-                            ->label('Kelas/Jurusan')
-                            ->maxLength(100)
-                            ->helperText('Kelas atau jurusan peminjam'),
-                        
-                        Forms\Components\TextInput::make('school_institution')
-                            ->label('Sekolah/Instansi')
-                            ->maxLength(255)
-                            ->helperText('Nama sekolah atau instansi'),
-                        
-                        Forms\Components\TextInput::make('contact_address')
-                            ->label('Alamat Kontak')
-                            ->maxLength(255)
-                            ->helperText('Alamat atau nomor telepon peminjam'),
+                            ->label('Kelas / Jurusan')
+                            ->readOnly()
+                            ->dehydrated(false)
+                            ->helperText('Kelas/Jurusan akan terisi otomatis.'),
                     ])
-                    ->columns(2),
+                    ->columns(3), // Diubah ke 3 kolom agar rapi
                 
                 Forms\Components\Section::make('Informasi Buku')
                     ->schema([
@@ -170,6 +171,19 @@ class BorrowingResource extends Resource
                     ->columns(2)
                     ->visible(fn (?Borrowing $record) => $record && $record->status === 'returned'),
             ]);
+    }
+
+    public static function mutateFormDataBeforeFill(array $data): array
+    {
+        if (isset($data['user_id'])) {
+            $user = User::find($data['user_id']);
+            if ($user) {
+                $data['user_email'] = $user->email;
+                $data['class_major'] = $user->class_major;
+            }
+        }
+
+        return $data;
     }
 
     public static function table(Table $table): Table

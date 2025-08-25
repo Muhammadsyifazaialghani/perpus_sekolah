@@ -61,36 +61,55 @@ class UserDashboardController extends Controller
         return view('user.borrow_form', compact('book'));
     }
 
-    public function confirmBorrow(Request $request, $id)
-    {
-        $book = Book::findOrFail($id);
-        if (!$book->available) {
-            return redirect()->route('dashboard')->with('error', 'Buku tidak tersedia');
-        }
+    // app/Http/Controllers/UserDashboardController.php
 
-        $userId = Auth::id();
-        $activeBorrowingsCount = Borrowing::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'approved'])
-            ->count();
+// app/Http/Controllers/UserDashboardController.php
 
-        if ($activeBorrowingsCount >= 3) {
-            return redirect()->route('dashboard')->with('error', 'Batas maksimal peminjaman adalah 3 buku.');
-        }
+public function confirmBorrow(Request $request, $id)
+{
+    // --- Kode di bawah ini sekarang akan dijalankan ---
 
-        $borrowing = Borrowing::create([
-            'user_id' => $userId,
-            'book_id' => $book->id,
-            'borrowed_at' => now(),
-            'due_at' => now()->addWeeks(2),
-            'status' => 'pending',
-        ]);
+    // 1. Validasi input dari form, termasuk class_major
+    $request->validate([
+        'class_major' => 'required|string|max:255',
+        'borrowed_at' => 'required|date',
+        'due_at' => 'required|date|after_or_equal:borrowed_at',
+    ]);
 
-        // Mark book as unavailable
-        $book->available = false;
-        $book->save();
-
-        return redirect()->route('dashboard')->with('success', 'Peminjaman berhasil dikonfirmasi');
+    $book = Book::findOrFail($id);
+    if (!$book->available) {
+        return redirect()->route('dashboard')->with('error', 'Buku tidak tersedia');
     }
+
+    /** @var \App\Models\User $user */
+    $user = Auth::user(); // Ambil user yang sedang login
+    $activeBorrowingsCount = Borrowing::where('user_id', $user->id)
+        ->whereIn('status', ['pending', 'approved'])
+        ->count();
+
+    if ($activeBorrowingsCount >= 3) {
+        return redirect()->route('dashboard')->with('error', 'Batas maksimal peminjaman adalah 3 buku.');
+    }
+
+    // 2. SIMPAN DATA JURUSAN KE PROFIL USER
+    $user->update([
+        'class_major' => $request->input('class_major'),
+    ]);
+
+    // 3. Lanjutkan proses peminjaman
+    $borrowing = Borrowing::create([
+        'user_id' => $user->id,
+        'book_id' => $book->id,
+        'borrowed_at' => $request->borrowed_at,
+        'due_at' => $request->due_at,
+        'status' => 'pending',
+    ]);
+
+    $book->available = false;
+    $book->save();
+
+    return redirect()->route('dashboard')->with('success', 'Peminjaman berhasil dikonfirmasi');
+}
 
     public function borrowHistory()
     {
