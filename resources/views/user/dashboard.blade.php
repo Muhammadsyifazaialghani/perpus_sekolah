@@ -1,474 +1,121 @@
 @extends('layouts.app')
+
+{{-- TIDAK PERLU BLOK STYLE LAGI --}}
+
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Daftar Buku</h1>
-    <form action="{{ auth()->check() ? route('dashboard.search') : route('public.dashboard.search') }}" method="GET" class="mb-4">
-        <div class="search-container">
-            <input type="text" name="query" placeholder="Cari buku atau penulis..." class="search-box" value="{{ request('query') }}">
-            <button type="submit" class="search-btn">Cari</button>
+{{-- Cukup tambahkan class 'animate-fadeIn' yang sudah dibuat di tailwind.config.js --}}
+<div class="bg-gradient-to-br from-gray-50 to-slate-200 min-h-screen animate-fadeIn">
+    <div class="container mx-auto p-4 md:p-6 lg:p-8">
+        
+        {{-- Header Section --}}
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2 tracking-tight">Daftar Buku</h1>
+            <p class="text-lg text-gray-500">Jelajahi koleksi buku kami dan temukan bacaan favorit Anda berikutnya.</p>
         </div>
-    </form>
-    
-    <style>
-        /* CSS Utama */
-        :root {
-          --primary: #4361ee;
-          --primary-dark: #3a0ca3;
-          --secondary: #7209b7;
-          --success: #06ffa5;
-          --danger: #ff006e;
-          --light: #f8f9fa;
-          --dark: #212529;
-          --gray: #6c757d;
-          --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-          --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-          min-height: 100vh;
-          color: var(--dark);
-          line-height: 1.6;
-        }
-        .container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        /* Header Dashboard */
-        .dashboard-header {
-          background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-          color: white;
-          padding: 2rem;
-          border-radius: 15px;
-          box-shadow: var(--shadow);
-          margin-bottom: 2rem;
-          text-align: center;
-        }
-        .dashboard-header h1 {
-          font-size: 2.5rem;
-          margin-bottom: 0.5rem;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        /* Search Box */
-        .search-container {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 2rem;
-        }
-        .search-box {
-          flex: 1;
-          padding: 15px 20px;
-          border: none;
-          border-radius: 50px;
-          background: white;
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-          font-size: 1rem;
-          transition: var(--transition);
-        }
-        .search-box:focus {
-          outline: none;
-          box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
-          transform: translateY(-2px);
-        }
-        .search-btn {
-          padding: 15px 30px;
-          background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-          color: white;
-          border: none;
-          border-radius: 50px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: var(--transition);
-          box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-        }
-        .search-btn:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
-        }
-        
-        /* Book Cards */
-        .books-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 2rem;
-          margin-bottom: 2rem;
-        }
-        
-        .book-card {
-          background: white;
-          border-radius: 15px;
-          overflow: hidden;
-          box-shadow: var(--shadow);
-          transition: var(--transition);
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .book-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-        
-        .book-img-container {
-          position: relative;
-          height: 220px;
-          overflow: hidden;
-        }
-        
-        .book-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.5s ease;
-        }
-        
-        .book-card:hover .book-img {
-          transform: scale(1.05);
-        }
-        
-        .status-badge {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          padding: 0.4rem 0.8rem;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        
-        .badge-available {
-          background-color: #28a745;
-          color: white;
-        }
-        
-        .badge-unavailable {
-          background-color: #dc3545;
-          color: white;
-        }
-        
-        .book-info {
-          padding: 1.5rem;
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .book-title {
-          font-weight: 700;
-          font-size: 1.25rem;
-          color: #333;
-          margin-bottom: 0.5rem;
-        }
-        
-        .book-author {
-          color: #6c757d;
-          font-size: 0.95rem;
-          margin-bottom: 1.2rem;
-        }
-        
-        .book-actions {
-          margin-top: auto;
-          display: flex;
-          flex-direction: column;
-          gap: 0.8rem;
-        }
-        
-        .btn-action {
-          border-radius: 20px;
-          font-weight: 500;
-          padding: 0.5rem 1.2rem;
-          transition: all 0.3s ease;
-          text-align: center;
-          cursor: pointer;
-          border: none;
-          font-size: 0.9rem;
-        }
-        
-        .btn-detail {
-          background: rgba(67, 97, 238, 0.1);
-          color: var(--primary);
-        }
-        
-        .btn-detail:hover {
-          background: var(--primary);
-          color: white;
-          transform: translateY(-2px);
-        }
-        
-        .btn-borrow {
-          background: rgba(6, 255, 165, 0.1);
-          color: #06c26b;
-        }
-        
-        .btn-borrow:hover {
-          background: var(--success);
-          color: white;
-          transform: translateY(-2px);
-        }
-        
-        .btn-borrow:disabled {
-          background: #e9ecef;
-          color: #6c757d;
-          cursor: not-allowed;
-          transform: none;
-        }
-        
-        /* Halaman Detail Buku */
-        .detail-container {
-          background: white;
-          border-radius: 15px;
-          box-shadow: var(--shadow);
-          overflow: hidden;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-        .detail-header {
-          background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-          color: white;
-          padding: 2rem;
-          text-align: center;
-        }
-        .detail-header h2 {
-          font-size: 2rem;
-          margin-bottom: 1rem;
-        }
-        .detail-content {
-          padding: 2rem;
-        }
-        .book-info {
-          margin-bottom: 2rem;
-        }
-        .book-info h3 {
-          color: var(--primary);
-          margin-bottom: 1rem;
-          font-size: 1.5rem;
-        }
-        .book-meta {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          margin-bottom: 1.5rem;
-        }
-        .book-meta p {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .book-meta strong {
-          color: var(--dark);
-          min-width: 120px;
-        }
-        .detail-actions {
-          display: flex;
-          gap: 15px;
-          justify-content: center;
-          margin-top: 2rem;
-        }
-        .btn-primary {
-          padding: 12px 30px;
-          background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-          color: white;
-          border: none;
-          border-radius: 50px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: var(--transition);
-          box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-        }
-        .btn-primary:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
-        }
-        .btn-secondary {
-          padding: 12px 30px;
-          background: transparent;
-          color: var(--gray);
-          border: 2px solid var(--gray);
-          border-radius: 50px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: var(--transition);
-        }
-        .btn-secondary:hover {
-          background: var(--gray);
-          color: white;
-          transform: translateY(-2px);
-        }
-        /* Form Peminjaman */
-        .form-container {
-          background: white;
-          border-radius: 15px;
-          box-shadow: var(--shadow);
-          max-width: 600px;
-          margin: 2rem auto;
-          overflow: hidden;
-        }
-        .form-header {
-          background: linear-gradient(135deg, #06ffa5 0%, #06c26b 100%);
-          color: white;
-          padding: 2rem;
-          text-align: center;
-        }
-        .form-header h2 {
-          font-size: 1.8rem;
-        }
-        .form-content {
-          padding: 2rem;
-        }
-        .form-group {
-          margin-bottom: 1.5rem;
-        }
-        .form-group label {
-          display: block;
-          margin-bottom: 8px;
-          font-weight: 600;
-          color: var(--dark);
-        }
-        .form-control {
-          width: 100%;
-          padding: 12px 15px;
-          border: 2px solid #eee;
-          border-radius: 10px;
-          font-size: 1rem;
-          transition: var(--transition);
-        }
-        .form-control:focus {
-          outline: none;
-          border-color: var(--primary);
-          box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-        .form-actions {
-          display: flex;
-          gap: 15px;
-          justify-content: center;
-          margin-top: 2rem;
-        }
-        .btn-success {
-          padding: 12px 30px;
-          background: linear-gradient(135deg, var(--success) 0%, #06c26b 100%);
-          color: var(--dark);
-          border: none;
-          border-radius: 50px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: var(--transition);
-          box-shadow: 0 4px 15px rgba(6, 255, 165, 0.3);
-        }
-        .btn-success:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 7px 20px rgba(6, 255, 165, 0.4);
-        }
-        /* Animasi */
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .dashboard-header, .book-card, .detail-container, .form-container {
-          animation: fadeIn 0.6s ease-out;
-        }
-        /* Responsive */
-        @media (max-width: 768px) {
-          .dashboard-header h1 {
-            font-size: 2rem;
-          }
-          
-          .search-container {
-            flex-direction: column;
-          }
-          
-          .search-btn {
-            width: 100%;
-          }
-          
-          .books-grid {
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.5rem;
-          }
-          
-          .detail-actions, .form-actions {
-            flex-direction: column;
-          }
-        }
-    </style>
-    
-    @if(session('error'))
-        <div class="bg-red-200 text-red-800 p-4 rounded-lg mb-4 shadow-md">
-            {{ session('error') }}
-        </div>
-    @endif
-    @if(session('success'))
-        <div class="bg-green-200 text-green-800 p-4 rounded-lg mb-4 shadow-md">
-            {{ session('success') }}
-        </div>
-    @endif
-    
-    @if($books->count())
-        <div class="books-grid">
-            @foreach($books as $book)
-                <div class="book-card">
-                    <div class="book-img-container">
-                        <!-- Menggunakan cover image dari storage atau fallback ke placeholder -->
-                        @if($book->cover_image)
-                            <img src="{{ Storage::url($book->cover_image) }}" class="book-img" alt="{{ $book->title }}">
-                        @else
-                            <img src="https://picsum.photos/seed/{{ urlencode($book->title) }}/600/400.jpg" class="book-img" alt="{{ $book->title }}">
-                        @endif
-                        @if($book->available)
-                            <span class="status-badge badge-available">Tersedia</span>
-                        @else
-                            <span class="status-badge badge-unavailable">Tidak Tersedia</span>
-                        @endif
-                    </div>
-                    <div class="book-info">
-                        <h5 class="book-title">{{ $book->title }}</h5>
-                        <p class="book-author"><i class="bi bi-person me-1"></i>Oleh: {{ $book->author }}</p>
-                        <div class="book-actions">
-                            <a href="{{ auth()->check() ? route('dashboard.book.detail', $book->id) : route('public.book.detail', $book->id) }}" class="btn-action btn-detail">
-                                <i class="bi bi-info-circle me-1"></i> Detail
-                            </a>
-                            @if($book->available)
-                                @if(auth()->check())
-                                    <a href="{{ route('dashboard.book.borrow.form', $book->id) }}" class="btn-action btn-borrow">
-                                        <i class="bi bi-bookmark-plus me-1"></i> Pinjam
-                                    </a>
-                                @else
-                                    <a href="{{ route('login') }}" class="btn-action btn-borrow">
-                                        <i class="bi bi-bookmark-plus me-1"></i> Login untuk Pinjam
-                                    </a>
-                                @endif
+
+        {{-- Search Form --}}
+        <form action="{{ auth()->check() ? route('dashboard.search') : route('public.dashboard.search') }}" method="GET" class="mb-10 max-w-2xl mx-auto">
+            <div class="relative flex items-center">
+                <input 
+                    type="text" 
+                    name="query" 
+                    placeholder="Cari berdasarkan judul atau penulis..." 
+                    class="w-full py-4 pl-6 pr-32 text-gray-700 bg-white border-none rounded-full focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-lg"
+                    value="{{ request('query') }}"
+                >
+                <button 
+                    type="submit" 
+                    class="absolute top-1/2 right-2.5 transform -translate-y-1/2 px-8 py-2.5 text-white font-semibold bg-gradient-to-r from-blue-600 to-indigo-700 rounded-full hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300"
+                >
+                    Cari
+                </button>
+            </div>
+        </form>
+
+        {{-- Session Messages --}}
+        @if(session('error'))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-lg mb-6 shadow-md max-w-4xl mx-auto" role="alert">
+                <p class="font-semibold">Oops!</p>
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+        @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-lg mb-6 shadow-md max-w-4xl mx-auto" role="alert">
+                 <p class="font-semibold">Berhasil!</p>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        {{-- Books Grid --}}
+        @if($books->count())
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                @foreach($books as $book)
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-2 flex flex-col group">
+                        {{-- Book Cover Image --}}
+                        <div class="relative h-64 overflow-hidden">
+                            @if($book->cover_image)
+                                <img src="{{ Storage::url($book->cover_image) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Cover {{ $book->title }}">
                             @else
-                                <button class="btn-action btn-borrow" disabled>
-                                    <i class="bi bi-bookmark-plus me-1"></i> Pinjam
-                                </button>
+                                {{-- Fallback placeholder --}}
+                                <img src="https://placehold.co/600x400/e2e8f0/4a5568?text={{ urlencode($book->title) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Placeholder Cover {{ $book->title }}">
+                            @endif
+                            
+                            {{-- Availability Badge --}}
+                            @if($book->available)
+                                <span class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Tersedia</span>
+                            @else
+                                <span class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Tidak Tersedia</span>
                             @endif
                         </div>
+                        
+                        {{-- Book Information --}}
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h5 class="text-lg font-bold text-gray-800 mb-1 truncate" title="{{ $book->title }}">{{ $book->title }}</h5>
+                            <p class="text-sm text-gray-500 mb-5">Oleh: {{ $book->author }}</p>
+                            
+                            {{-- Action Buttons --}}
+                            <div class="mt-auto space-y-3">
+                                <a href="{{ auth()->check() ? route('dashboard.book.detail', $book->id) : route('public.book.detail', $book->id) }}" class="block w-full text-center bg-blue-50 text-blue-600 font-semibold py-2.5 px-4 rounded-full hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+                                    Detail
+                                </a>
+                                
+                                @if($book->available)
+                                    @if(auth()->check())
+                                        <a href="{{ route('dashboard.book.borrow.form', $book->id) }}" class="block w-full text-center bg-green-100 text-green-600 font-semibold py-2.5 px-4 rounded-full hover:bg-green-500 hover:text-white transition-all duration-300 transform hover:scale-105">
+                                            Pinjam
+                                        </a>
+                                    @else
+                                        <a href="{{ route('login') }}" class="block w-full text-center bg-green-100 text-green-600 font-semibold py-2.5 px-4 rounded-full hover:bg-green-500 hover:text-white transition-all duration-300 transform hover:scale-105">
+                                            Login untuk Pinjam
+                                        </a>
+                                    @endif
+                                @else
+                                    <button class="w-full text-center bg-gray-200 text-gray-500 font-medium py-2.5 px-4 rounded-full cursor-not-allowed" disabled>
+                                        Tidak Tersedia
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
-        
-        <div class="mt-6 flex justify-center">
-            {{ $books->links() }}
-        </div>
-    @else
-        <div class="bg-white p-8 rounded-xl shadow-md text-center">
-            <i class="bi bi-book text-gray-300 text-6xl mb-4"></i>
-            <p class="text-gray-500 text-lg">Tidak ada buku ditemukan.</p>
-        </div>
-    @endif
+                @endforeach
+            </div>
+
+            {{-- Pagination Links --}}
+            <div class="mt-12">
+                {{ $books->links() }}
+            </div>
+            
+        @else
+            {{-- No Books Found Message --}}
+            <div class="bg-white p-12 rounded-xl shadow-md text-center text-gray-500 mt-10">
+                <svg class="mx-auto h-16 w-16 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v11.494m-9-5.747h18" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                <p class="mt-4 text-lg font-medium">Tidak ada buku yang ditemukan.</p>
+                <p class="text-sm">Coba gunakan kata kunci lain untuk mencari.</p>
+            </div>
+        @endif
+    </div>
 </div>
 @endsection

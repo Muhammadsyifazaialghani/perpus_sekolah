@@ -6,449 +6,119 @@
     <title>Perpustakaan Sekolah</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-section">
-                <i class="fas fa-book-open logo-icon"></i>
-                <h1>Perpustakaan Sekolah</h1>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center flex-wrap sm:flex-nowrap">
+            
+            <div class="flex items-center gap-3 w-full justify-center sm:w-auto sm:justify-start mb-2 sm:mb-0">
+                <i class="fas fa-book-open text-3xl"></i>
+                <h1 class="text-2xl font-semibold tracking-wide">Perpustakaan Sekolah</h1>
             </div>
-            <nav class="nav-menu">
-                <a href="{{ route('dashboard') }}" class="nav-link">
-                    <i class="fas fa-book"></i>
-                    <span>Buku</span>
+
+            <nav class="flex gap-2 order-3 w-full justify-around mt-2 pt-2 border-t border-white/20 sm:order-none sm:w-auto sm:mt-0 sm:pt-0 sm:border-0">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
+                    <i class="fas fa-book text-lg"></i>
+                    <span class="text-base font-medium hidden lg:inline">Buku</span>
                 </a>
-                <a href="{{ route ('dashboard.categories') }}" class="nav-link">
-                    <i class="fas fa-tags"></i>
-                    <span>Kategori</span>
+                <a href="{{ route ('dashboard.categories') }}" class="flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
+                    <i class="fas fa-tags text-lg"></i>
+                    <span class="text-base font-medium hidden lg:inline">Kategori</span>
                 </a>
-                <!-- <a href="{{ route('return.book') }}" class="nav-link">
-                    <i class="fas fa-user-edit"></i>
-                    <span>Penulis</span>
-                </a> -->
-                <a href="{{ route('return.book') }}" class="nav-link">
-                    <i class="fas fa-undo-alt"></i>
-                    <span>Pengembalian</span>
+                <a href="{{ route('return.book') }}" class="flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
+                    <i class="fas fa-undo-alt text-lg"></i>
+                    <span class="text-base font-medium hidden lg:inline">Pengembalian</span>
                 </a>
             </nav>
-            @if(auth()->check())
-            <div class="profile-section">
-                <button class="profile-button" onclick="toggleDropdown()">
-                    <div class="profile-avatar">
-                        <span class="avatar-initial">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                    </div>
-                    <span class="user-name">{{ auth()->user()->name }}</span>
-                    <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div id="profile-dropdown" class="dropdown-menu">
-                    <div class="dropdown-header">
-                        <div class="profile-info">
-                            <div class="profile-avatar-large">
-                                <span class="avatar-initial-large">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                            </div>
-                            <div class="user-details">
-                                <p class="user-fullname">{{ auth()->user()->name }}</p>
-                                <p class="user-email">{{ auth()->user()->email }}</p>
+
+            <div class="relative order-2 sm:order-none absolute top-3.5 right-4 sm:relative sm:top-auto sm:right-auto">
+                @if(auth()->check())
+                    <button id="profile-button" class="flex items-center gap-2.5 p-1.5 rounded-full transition-colors duration-300 hover:bg-white/15">
+                        <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-semibold text-base">
+                            <span>{{ substr(auth()->user()->name, 0, 1) }}</span>
+                        </div>
+                        <span class="text-base font-medium hidden md:inline">{{ auth()->user()->name }}</span>
+                        <svg id="dropdown-icon" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div id="profile-dropdown" class="absolute top-full right-0 mt-2.5 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden border border-gray-200/50 hidden">
+                        <div class="p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center font-bold text-xl">
+                                    <span>{{ substr(auth()->user()->name, 0, 1) }}</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-lg">{{ auth()->user()->name }}</p>
+                                    <p class="text-sm opacity-90">{{ auth()->user()->email }}</p>
+                                </div>
                             </div>
                         </div>
+                        <div class="py-2 text-gray-700">
+                            <a href="#" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-user-cog w-5 text-center text-gray-500"></i>
+                                <span>Pengaturan Akun</span>
+                            </a>
+                            <a href="{{ route('dashboard.borrow.history') }}" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-history w-5 text-center text-gray-500"></i>
+                                <span>Riwayat Peminjaman</span>
+                            </a>
+                        </div>
+                        <a href="{{ route('logout') }}" 
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
+                           class="flex items-center gap-3 px-5 py-3 text-base font-medium text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100">
+                            <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                            <span>Logout</span>
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     </div>
-                    <div class="dropdown-actions">
-                    <a href="#" class="dropdown-action-link">
-                        <i class="fas fa-user-cog"></i>
-                        <span>Pengaturan Akun</span>
+                @else
+                    <a href="{{ route('login') }}" class="flex items-center gap-2 px-4 py-2 rounded-md transition-colors duration-300 hover:bg-white/15">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="font-medium text-base">Login</span>
                     </a>
-                    <a href="{{ route('dashboard.borrow.history') }}" class="dropdown-action-link">
-                        <i class="fas fa-history"></i>
-                        <span>Riwayat Peminjaman</span>
-                    </a>
-                    </div>
-                    <a href="{{ route('logout') }}" 
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
-                       class="logout-link">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </div>
+                @endif
             </div>
-            @else
-            <div class="profile-section">
-                <a href="{{ route('login') }}" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>Login</span>
-                </a>
-            </div>
-            @endif
         </div>
     </header>
-    <main class="main-content">
+
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         @yield('content')
     </main>
-    <style>
-        /* Reset dan Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        /* Header Styles */
-        .main-header {
-            background: linear-gradient(135deg, #0066cc, #0052a3);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        /* Logo Section */
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-icon {
-            font-size: 1.8rem;
-            color: #ffffff;
-        }
-        .main-header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Navigation Menu */
-        .nav-menu {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
-        
-        .nav-link i {
-            font-size: 1rem;
-        }
-        
-        .nav-link span {
-            font-size: 0.95rem;
-        }
-        
-        /* Profile Section */
-        .profile-section {
-            position: relative;
-        }
-        .profile-button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-        }
-        .profile-button:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-        
-        /* Profile Avatar */
-        .profile-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        .avatar-initial {
-            font-size: 0.9rem;
-        }
-        
-        .user-name {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .dropdown-icon {
-            width: 16px;
-            height: 16px;
-            transition: transform 0.3s ease;
-        }
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 10px;
-            width: 280px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            z-index: 1000;
-            display: none;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.08);
-        }
-        .dropdown-menu.show {
-            display: block;
-            animation: dropdownFade 0.3s ease;
-        }
-        
-        @keyframes dropdownFade {
-            from {
-                opacity: 0;
-                transform: translateY(-15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .dropdown-header {
-            background: linear-gradient(135deg, #0066cc, #0052a3);
-            color: white;
-            padding: 20px;
-        }
-        
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .profile-avatar-large {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        
-        .avatar-initial-large {
-            font-size: 1.4rem;
-        }
-        
-        .user-details {
-            flex: 1;
-        }
-        
-        .user-fullname {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
-        
-        .user-email {
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        
-        .dropdown-actions {
-            padding: 8px 0;
-        }
-        
-        .dropdown-action-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: #333;
-            text-decoration: none;
-            transition: background-color 0.2s ease;
-        }
-        
-        .dropdown-action-link:hover {
-            background-color: #f5f7fa;
-        }
-        
-        .dropdown-action-link i {
-            color: #6c757d;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .logout-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: #e74c3c;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-top: 1px solid #f0f0f0;
-        }
-        
-        .logout-link:hover {
-            background-color: #fff5f5;
-        }
-        
-        .logout-link i {
-            font-size: 1rem;
-        }
-        
-        /* Main Content */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 992px) {
-            .nav-menu {
-                gap: 0.3rem;
-            }
-            
-            .nav-link {
-                padding: 0.5rem 0.8rem;
-            }
-            
-            .nav-link span {
-                display: none;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .header-container {
-                padding: 0 15px;
-            }
-            
-            .logo-section {
-                gap: 8px;
-            }
-            
-            .logo-icon {
-                font-size: 1.5rem;
-            }
-            
-            .main-header h1 {
-                font-size: 1.3rem;
-            }
-            
-            .user-name {
-                display: none;
-            }
-            
-            .dropdown-menu {
-                width: 260px;
-                right: -10px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .header-container {
-                flex-wrap: wrap;
-            }
-            
-            .logo-section {
-                width: 100%;
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-            
-            .nav-menu {
-                order: 3;
-                width: 100%;
-                justify-content: space-around;
-                margin-top: 10px;
-                padding-top: 10px;
-                border-top: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            
-            .profile-section {
-                order: 2;
-                position: absolute;
-                top: 15px;
-                right: 20px;
-            }
-            
-            .main-content {
-                padding-top: 80px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .main-header h1 {
-                font-size: 1.1rem;
-            }
-            
-            .nav-link {
-                padding: 0.4rem 0.6rem;
-            }
-            
-            .dropdown-menu {
-                width: 240px;
-            }
-        }
-    </style>
+    
     <script>
+        // Memilih elemen yang diperlukan
+        const profileButton = document.getElementById('profile-button');
+        const dropdown = document.getElementById('profile-dropdown');
+        const icon = document.getElementById('dropdown-icon');
+
+        // Fungsi untuk membuka/menutup dropdown
         function toggleDropdown() {
-            const dropdown = document.getElementById('profile-dropdown');
-            const icon = document.querySelector('.dropdown-icon');
-            
-            dropdown.classList.toggle('show');
-            
-            // Rotate icon when dropdown is open
-            if (dropdown.classList.contains('show')) {
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                icon.style.transform = 'rotate(0deg)';
-            }
+            dropdown.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
         }
-        
-        // Close dropdown when clicking outside
+
+        // Menambahkan event listener ke tombol profil (jika ada)
+        if (profileButton) {
+            profileButton.addEventListener('click', function(event) {
+                // Mencegah event 'click' menyebar ke document
+                event.stopPropagation();
+                toggleDropdown();
+            });
+        }
+
+        // Menutup dropdown jika pengguna mengklik di luar area dropdown
         document.addEventListener('click', function(event) {
-            const profileSection = document.querySelector('.profile-section');
-            const dropdown = document.getElementById('profile-dropdown');
-            const icon = document.querySelector('.dropdown-icon');
-            
-            if (!profileSection.contains(event.target)) {
-                dropdown.classList.remove('show');
-                icon.style.transform = 'rotate(0deg)';
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                // Cek apakah target klik bukan dropdown itu sendiri atau tombol profil
+                if (!dropdown.contains(event.target) && !profileButton.contains(event.target)) {
+                    toggleDropdown();
+                }
             }
         });
     </script>

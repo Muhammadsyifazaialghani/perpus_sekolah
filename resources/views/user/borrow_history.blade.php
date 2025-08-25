@@ -8,7 +8,7 @@
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white rounded-lg shadow-md">
                 <thead>
-                    <tr class="bg-blue-600 text">
+                    <tr class="bg-blue-400 text">
                         <th class="py-3 px-6 text-left">Judul Buku</th>
                         <th class="py-3 px-6 text-left">Tanggal Pinjam</th>
                         <th class="py-3 px-6 text-left">Tanggal Kembali</th>
