@@ -37,27 +37,28 @@
                         // Diubah: Warna fokus menjadi biru
                         $inputClasses = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm focus:-translate-y-0.5 focus:shadow-lg";
                     @endphp
-                                <label for="class_major" class="block text-sm font-medium text-gray-700 mb-1">Kelas / Jurusan</label>
-            <select id="class_major" name="class_major" class="{{ $inputClasses }}" required>
-                <option value="" disabled {{ !auth()->user()->class_major ? 'selected' : '' }}>
-                    Pilih salah satu
-                </option>
-                <option value="RPL (PPLG)" {{ auth()->user()->class_major == 'RPL (PPLG)' ? 'selected' : '' }}>
-                    RPL (PPLG)
-                </option>
-                <option value="TKJ (TJKT)" {{ auth()->user()->class_major == 'TKJ (TJKT)' ? 'selected' : '' }}>
-                    TKJ (TJKT)
-                </option>
-                <option value="MM (DKV)" {{ auth()->user()->class_major == 'MM (DKV)' ? 'selected' : '' }}>
-                    MM (DKV)
-                </option>
-                <option value="OTKP (MPLB)" {{ auth()->user()->class_major == 'OTKP (MPLB)' ? 'selected' : '' }}>
-                    OTKP (MPLB)
-                </option>
-            </select>
-                </div>
-            </div>
-            
+                    <div class="sm:col-span-2">
+                        <label for="class_major" class="block text-sm font-medium text-gray-700 mb-1">Kelas / Jurusan</label>
+                            <select id="class_major" name="class_major" class="{{ $inputClasses }}" required>
+                                <option value="" disabled {{ !auth()->user()->class_major ? 'selected' : '' }}>
+                                    Pilih salah satu
+                                </option>
+                                <option value="RPL (PPLG)" {{ auth()->user()->class_major == 'RPL (PPLG)' ? 'selected' : '' }}>
+                                    RPL (PPLG)
+                                </option>
+                                <option value="TKJ (TJKT)" {{ auth()->user()->class_major == 'TKJ (TJKT)' ? 'selected' : '' }}>
+                                    TKJ (TJKT)
+                                </option>
+                                <option value="MM (DKV)" {{ auth()->user()->class_major == 'MM (DKV)' ? 'selected' : '' }}>
+                                    MM (DKV)
+                                </option>
+                                <option value="OTKP (MPLB)" {{ auth()->user()->class_major == 'OTKP (MPLB)' ? 'selected' : '' }}>
+                                    OTKP (MPLB)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                 </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
                     <label for="borrowed_at" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pinjam</label>

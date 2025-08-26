@@ -29,7 +29,7 @@
                     <i class="fas fa-tags text-lg"></i>
                     <span class="text-base font-medium hidden lg:inline">Kategori</span>
                 </a>
-                <a href="{{ route('return.book') }}" class="flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
+                <a href="{{ route('dashboard.return.form') }}" class="flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
                     <i class="fas fa-undo-alt text-lg"></i>
                     <span class="text-base font-medium hidden lg:inline">Pengembalian</span>
                 </a>

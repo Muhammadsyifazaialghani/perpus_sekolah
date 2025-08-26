@@ -8,7 +8,7 @@ use App\Http\Controllers\UserDashboardController;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/', [UserDashboardController::class, 'welcome']);
 Route::get('/return/book', [App\Http\Controllers\UserDashboardController::class, 'returnBookForm'])->name('return.book');    
 
 // Login options page

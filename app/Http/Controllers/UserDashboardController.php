@@ -191,4 +191,10 @@ public function confirmBorrow(Request $request, $id)
         // Redirect ke halaman admin borrowing report
         return redirect('/admin/borrowings/report');
     }
+
+    public function welcome(Request $request)
+    {
+        $featuredBooks = Book::inRandomOrder()->take(3)->get();
+        return view('welcome', compact('featuredBooks'));
+    }
 }
