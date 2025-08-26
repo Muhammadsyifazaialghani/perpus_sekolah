@@ -1,238 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Admin Login</title>
-    {{-- Memuat file CSS eksternal Laravel --}}
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/simple-styles.css') }}" rel="stylesheet" />
-
-    {{-- CSS Kustom untuk Halaman Login --}}
-    <style>
-        /* Variabel CSS untuk kontrol tema RGB yang baru */
-       :root {
-            --rgb-primary: 255, 193, 7;      /* Emas hangat */
-            --rgb-secondary: 13, 110, 253;   /* Biru yang dinamis */
-            --rgb-accent: 108, 117, 125;     /* Abu-abu lembut */
-            --rgb-bg: 33, 37, 41;            /* Abu-abu tua gelap */
-            --transition-speed: 0.3s;
-        }
-
-    /* Reset dan gaya dasar */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg,
-        rgba(var(--rgb-bg), 0.95),
-        rgba(var(--rgb-bg), 0.85));
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Login container */
-    .login-container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .login-card {
-      background: rgba(var(--rgb-bg), 0.6);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-      padding: 40px;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      border: 1px solid rgba(var(--rgb-primary), 0.3);
-      position: relative;
-      overflow: hidden;
-      transition: all var(--transition-speed);
-    }
-
-    .login-card:hover {
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
-    }
-
-    .logout-message {
-      background: rgba(40, 167, 69, 0.2);
-      color: #d4edda;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      border-left: 4px solid #28a745;
-      font-weight: 500;
-      backdrop-filter: blur(5px);
-    }
-
-    .logout-message.error-message {
-        background: rgba(220, 53, 69, 0.2);
-        color: #f8d7da;
-        border-left: 4px solid #dc3545;
-    }
-
-    .form-title {
-      font-size: 28px;
-      margin-bottom: 30px;
-      background: linear-gradient(90deg,
-        rgb(var(--rgb-primary)),
-        rgb(var(--rgb-secondary)),
-        rgb(var(--rgb-primary)));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 15px rgba(var(--rgb-primary), 0.5);
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .form-input-lg {
-        width: 100%;
-        padding: 18px 20px;
-        font-size: 18px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(var(--rgb-primary), 0.3);
-        border-radius: 12px;
-        color: white;
-        transition: all var(--transition-speed);
-        backdrop-filter: blur(5px);
-    }
-
-    .form-input-lg::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    .form-input-lg:focus {
-        outline: none;
-        border-color: rgb(var(--rgb-primary));
-        box-shadow: 0 0 20px rgba(var(--rgb-primary), 0.5);
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    /* Kelas untuk tombol login dan daftar */
-    .action-button {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(90deg,
-        rgba(var(--rgb-primary), 0.8),
-        rgba(var(--rgb-secondary), 0.8));
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition-speed);
-      margin-top: 10px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(var(--rgb-primary), 0.3);
-      text-decoration: none; /* Hilangkan garis bawah pada link */
-      display: inline-block; /* Agar bisa pakai width */
-    }
-
-    .action-button:hover {
-      background: linear-gradient(90deg,
-        rgba(var(--rgb-primary), 0.9),
-        rgba(var(--rgb-secondary), 0.9));
-      box-shadow: 0 8px 20px rgba(var(--rgb-primary), 0.5);
-    }
-
-    /* Karena kedua tombol menggunakan style yang sama, kita bisa
-       membuat div wrapper untuk memberikan margin atas pada tombol kedua. */
-    .button-group {
-      margin-top: 10px;
-    }
-     .back-link {
-            display: block; /* Membuatnya menempati satu baris */
-            margin-top: 25px; /* Memberi jarak dari tombol di atasnya */
-            color: rgba(255, 255, 255, 0.6); /* Warna abu-abu yang soft */
-            text-decoration: none; /* Menghilangkan garis bawah */
-            font-size: 14px;
-            transition: color var(--transition-speed);
-        }
-
-        .back-link:hover {
-            color: white; /* Warna menjadi putih saat di-hover */
-        }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .login-card {
-        padding: 30px 20px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .login-card {
-        max-width: 100%;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      .form-title {
-        font-size: 24px;
-      }
-    }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Perpustakaan Sekolah</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-card">
-            <h2 class="form-title">Log in</h2>
-            @if ($errors->any())
-                <div class="logout-message error-message">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+<body class="bg-gray-100 font-[Inter,sans-serif] text-gray-900 min-h-screen flex items-center justify-center">
+
+    <div class="container mx-auto p-4">
+        <div class="flex flex-col lg:flex-row w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+            
+            <!-- Left Column: Illustration & Welcome Text -->
+            <div class="w-full lg:w-1/2 bg-gray-50 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
+                <!-- Admin-specific SVG illustration -->
+                <svg class="w-2/3 mb-6" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="30" width="180" height="100" rx="10" fill="#E5E7EB"/>
+                    <path d="M 30 50 L 170 50 L 170 110 L 30 110 Z" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2"/>
+                    <rect x="40" y="60" width="20" height="15" rx="2" fill="#A5B4FC"/>
+                    <rect x="70" y="60" width="20" height="15" rx="2" fill="#A5B4FC"/>
+                    <rect x="100" y="60" width="20" height="15" rx="2" fill="#A5B4FC"/>
+                    <rect x="130" y="60" width="20" height="15" rx="2" fill="#A5B4FC"/>
+                    <rect x="40" y="85" width="50" height="15" rx="2" fill="#C7D2FE"/>
+                    <rect x="100" y="85" width="50" height="15" rx="2" fill="#C7D2FE"/>
+                    <circle cx="160" cy="40" r="8" fill="#4F46E5"/>
+                </svg>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Admin Control Panel</h2>
+                <p class="text-gray-500">Silakan login untuk mengelola sistem perpustakaan.</p>
+            </div>
+
+            <!-- Right Column: Login Form -->
+            <div class="w-full lg:w-1/2 p-8 sm:p-12">
+                <h1 class="text-3xl font-bold text-gray-800 mb-8">Admin Login</h1>
+
+                <!-- Display Messages -->
+                @if ($errors->any())
+                    <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6 border border-red-200 text-sm">
+                        <ul class="list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-6 border border-green-200 text-sm font-medium">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('admin.login.post') }}" class="space-y-6">
+                    @csrf
+                    <div>
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-700">Username</label>
+                        <input id="username" type="text" name="username" required autofocus 
+                               class="block w-full px-4 py-3 text-base bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                               placeholder="Enter your admin username" />
+                    </div>
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Password</label>
+                        <input id="password" type="password" name="password" required 
+                               class="block w-full px-4 py-3 text-base bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                               placeholder="Enter your password" />
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button type="submit" 
+                                class="w-full py-3 text-base font-semibold text-white bg-indigo-600 rounded-lg shadow-md transition-all duration-300 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Login
+                        </button>
+                    </div>
+                </form>
+
+                 <div class="text-center mt-8">
+                    <a href="/login" class="text-sm text-gray-500 transition-colors duration-300 hover:text-indigo-600">
+                        &larr; Kembali ke Pilihan Login
+                    </a>
                 </div>
-            @endif
-            @if (session('success'))
-                <div class="logout-message">
-                    {{ session('success') }}
-                </div>
-            @endif
-            <form method="POST" action="{{ route('admin.login.post') }}">
-                @csrf
-                <div class="form-group">
-                    <label for="username" class="form-label">👤 Username</label>
-                    <input id="username" type="username" name="username" required autofocus class="form-input-lg" placeholder="Enter your username" />
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">🔐 Password</label>
-                    <input id="password" type="password" name="password" required class="form-input-lg" placeholder="Enter your password" />
-                </div>
-                <button type="submit" class="action-button">Login</button>
-                <a href="/login" class="back-link">← Kembali ke Login</a>
-            </form>
             </div>
         </div>
     </div>
+
 </body>
 </html>
