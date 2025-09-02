@@ -60,10 +60,10 @@
                             </div>
                         </div>
                         <div class="py-2 text-gray-700">
-                            <a href="#" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
-                                <i class="fas fa-user-cog w-5 text-center text-gray-500"></i>
-                                <span>Pengaturan Akun</span>
-                            </a>
+<a href="{{ url('/user/profile') }}" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
+    <i class="fas fa-user-cog w-5 text-center text-gray-500"></i>
+    <span>Pengaturan Akun</span>
+</a>
                             <a href="{{ route('dashboard.borrow.history') }}" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
                                 <i class="fas fa-history w-5 text-center text-gray-500"></i>
                                 <span>Riwayat Peminjaman</span>
