@@ -23,12 +23,12 @@ class BorrowingResource extends Resource
     protected static ?string $navigationLabel = 'Peminjaman';
     protected static ?string $modelLabel = 'Peminjaman';
     protected static ?string $pluralModelLabel = 'Peminjaman';
-    
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::active()->count();
     }
-    
+
     public static function getNavigationBadgeColor(): ?string
     {
         return 'primary';
@@ -59,17 +59,17 @@ class BorrowingResource extends Resource
                                     }
                                 } else {
                                     $set('user_email', null);
-                                    $set('class_major', null); 
+                                    $set('class_major', null);
                                 }
                             }),
-                        
-                       Forms\Components\TextInput::make('user_email')
+
+                        Forms\Components\TextInput::make('user_email')
                             ->label('Email Peminjam')
                             ->email()
                             ->readOnly()
                             ->dehydrated(false)
                             ->helperText('Email akan terisi otomatis.'),
-                        
+
                         Forms\Components\TextInput::make('class_major')
                             ->label('Kelas / Jurusan')
                             ->readOnly()
@@ -77,7 +77,7 @@ class BorrowingResource extends Resource
                             ->helperText('Kelas/Jurusan akan terisi otomatis.'),
                     ])
                     ->columns(3), // Diubah ke 3 kolom agar rapi
-                
+
                 Forms\Components\Section::make('Informasi Buku')
                     ->schema([
                         Forms\Components\Select::make('book_id')
@@ -87,7 +87,7 @@ class BorrowingResource extends Resource
                             ->required()
                             ->label('Judul Buku')
                             ->helperText('Pilih buku yang akan dipinjam'),
-                        
+
                         Forms\Components\TextInput::make('quantity')
                             ->label('Jumlah')
                             ->numeric()
@@ -96,14 +96,14 @@ class BorrowingResource extends Resource
                             ->default(1)
                             ->required()
                             ->helperText('Jumlah buku yang dipinjam'),
-                        
+
                         Forms\Components\TextInput::make('book_condition')
                             ->label('Kondisi Buku')
                             ->maxLength(255)
                             ->helperText('Kondisi buku saat dipinjam'),
                     ])
                     ->columns(2),
-                
+
                 Forms\Components\Section::make('Jadwal Peminjaman')
                     ->schema([
                         Forms\Components\DatePicker::make('borrowed_at')
@@ -111,19 +111,19 @@ class BorrowingResource extends Resource
                             ->required()
                             ->default(now())
                             ->helperText('Tanggal mulai peminjaman'),
-                        
+
                         Forms\Components\DatePicker::make('due_at')
                             ->label('Tanggal Kembali')
                             ->required()
                             ->default(now()->addDays(7))
                             ->helperText('Tanggal harus dikembalikan'),
-                        
+
                         Forms\Components\DatePicker::make('returned_at')
                             ->label('Tanggal Dikembalikan')
                             ->helperText('Kosongkan jika belum dikembalikan'),
                     ])
                     ->columns(3),
-                
+
                 Forms\Components\Section::make('Status & Catatan')
                     ->schema([
                         Forms\Components\Select::make('status')
@@ -136,40 +136,40 @@ class BorrowingResource extends Resource
                             ->required()
                             ->default('approved')
                             ->label('Status Peminjaman'),
-                        
+
                         Forms\Components\Textarea::make('admin_notes')
                             ->label('Catatan Admin')
                             ->rows(3)
                             ->helperText('Catatan tambahan dari admin'),
-                        
+
                         Forms\Components\Textarea::make('return_notes')
                             ->label('Catatan Pengembalian')
                             ->rows(3)
                             ->helperText('Catatan saat pengembalian'),
                     ])
                     ->columns(1),
-                
+
                 Forms\Components\Section::make('Denda Keterlambatan')
                     ->schema([
                         Forms\Components\TextInput::make('fine_amount')
                             ->label('Jumlah Denda (Rp)')
                             ->numeric()
                             ->prefix('Rp')
-                            ->disabled(fn (?Borrowing $record) => $record && $record->fine_paid)
+                            ->disabled(fn(?Borrowing $record) => $record && $record->fine_paid)
                             ->helperText('Denda akan dihitung otomatis saat buku dikembalikan terlambat'),
-                        
+
                         Forms\Components\Toggle::make('fine_paid')
                             ->label('Denda Sudah Dibayar')
-                            ->disabled(fn (?Borrowing $record) => !$record || $record->fine_amount <= 0)
+                            ->disabled(fn(?Borrowing $record) => !$record || $record->fine_amount <= 0)
                             ->helperText('Centang jika denda sudah dibayar'),
-                        
+
                         Forms\Components\DateTimePicker::make('fine_paid_at')
                             ->label('Tanggal Pembayaran Denda')
                             ->disabled()
                             ->helperText('Tanggal otomatis saat denda dibayar'),
                     ])
                     ->columns(2)
-                    ->visible(fn (?Borrowing $record) => $record && $record->status === 'returned'),
+                    ->visible(fn(?Borrowing $record) => $record && $record->status === 'returned'),
             ]);
     }
 
@@ -193,44 +193,44 @@ class BorrowingResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Nama Peminjam')
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('book.title')
                     ->label('Judul Buku')
                     ->searchable(),
-                    
-                
+
+
                 Tables\Columns\TextColumn::make('borrowed_at')
                     ->label('Tanggal Pinjam')
                     ->date(),
-                    
-                
+
+
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Tanggal Kembali')
                     ->date(),
-                   
-                
+
+
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'pending' => 'warning',
                         'approved' => 'success',
                         'rejected' => 'danger',
                         'returned' => 'info',
                     })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
                         'pending' => 'Menunggu',
                         'approved' => 'Disetujui',
                         'rejected' => 'Ditolak',
                         'returned' => 'Dikembalikan',
                     }),
-                
+
                 Tables\Columns\TextColumn::make('fine_amount')
                     ->label('Denda')
                     ->money('IDR')
                     ->color('danger')
                     ->sortable(),
-                
+
                 Tables\Columns\IconColumn::make('fine_paid')
                     ->label('Status Denda')
                     ->boolean()
@@ -238,19 +238,19 @@ class BorrowingResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger')
-                    ->tooltip(fn (?Borrowing $record) => $record->fine_paid ? 'Denda sudah dibayar' : 'Denda belum dibayar'),
-                
+                    ->tooltip(fn(?Borrowing $record) => $record->fine_paid ? 'Denda sudah dibayar' : 'Denda belum dibayar'),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Diajukan')
                     ->dateTime(),
-                
+
                 Tables\Columns\TextColumn::make('days_remaining')
                     ->label('Hari Tersisa')
-                    ->state(fn (Borrowing $record) => $record->days_remaining)
-                    ->color(fn (Borrowing $record) => $record->is_overdue ? 'danger' : ($record->days_remaining <= 3 ? 'warning' : 'success'))
+                    ->state(fn(Borrowing $record) => $record->days_remaining)
+                    ->color(fn(Borrowing $record) => $record->is_overdue ? 'danger' : ($record->days_remaining <= 3 ? 'warning' : 'success'))
                     ->sortable()
-                    ->tooltip(fn (Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : ($record->days_remaining . ' hari tersisa')),
-                
+                    ->tooltip(fn(Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : ($record->days_remaining . ' hari tersisa')),
+
                 Tables\Columns\IconColumn::make('is_overdue')
                     ->label('Status')
                     ->boolean()
@@ -258,8 +258,8 @@ class BorrowingResource extends Resource
                     ->falseIcon('heroicon-o-check-circle')
                     ->trueColor('danger')
                     ->falseColor('success')
-                    ->tooltip(fn (Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : 'Masih dalam waktu'),
-                    
+                    ->tooltip(fn(Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : 'Masih dalam waktu'),
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -270,15 +270,11 @@ class BorrowingResource extends Resource
                         'returned' => 'Dikembalikan',
                     ])
                     ->label('Status'),
-                
+
                 Tables\Filters\Filter::make('pending')
-                    ->query(fn (Builder $query): Builder => $query->where('status', 'pending'))
+                    ->query(fn(Builder $query): Builder => $query->where('status', 'pending'))
                     ->label('Menunggu Persetujuan'),
-                
-                Tables\Filters\Filter::make('active')
-                    ->label('Peminjaman Aktif')
-                    ->query(fn (Builder $query): Builder => $query->active())
-                    ->default(),
+
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
@@ -291,9 +287,9 @@ class BorrowingResource extends Resource
                             'approved_at' => now(),
                         ]);
                     })
-                    ->visible(fn (Borrowing $record) => $record->status === 'pending')
+                    ->visible(fn(Borrowing $record) => $record->status === 'pending')
                     ->requiresConfirmation(),
-                
+
                 Tables\Actions\Action::make('reject')
                     ->label('Tolak')
                     ->icon('heroicon-o-x-mark')
@@ -305,7 +301,7 @@ class BorrowingResource extends Resource
                             'admin_notes' => $data['admin_notes'] ?? null,
                         ]);
                     })
-                    ->visible(fn (Borrowing $record) => $record->status === 'pending')
+                    ->visible(fn(Borrowing $record) => $record->status === 'pending')
                     ->form([
                         Forms\Components\Textarea::make('admin_notes')
                             ->label('Alasan Penolakan')
@@ -313,7 +309,7 @@ class BorrowingResource extends Resource
                             ->rows(3),
                     ])
                     ->requiresConfirmation(),
-                
+
                 Tables\Actions\Action::make('pay_fine')
                     ->label('Bayar Denda')
                     ->icon('heroicon-o-currency-dollar')
@@ -321,13 +317,13 @@ class BorrowingResource extends Resource
                     ->action(function (Borrowing $record) {
                         $record->markFineAsPaid();
                     })
-                    ->modalDescription(fn (?Borrowing $record) => 'Apakah Anda yakin denda sebesar Rp ' . number_format($record->fine_amount, 0, ',', '.') . ' sudah dibayar?')
-                    ->visible(fn (?Borrowing $record) => $record->hasUnpaidFine())
+                    ->modalDescription(fn(?Borrowing $record) => 'Apakah Anda yakin denda sebesar Rp ' . number_format($record->fine_amount, 0, ',', '.') . ' sudah dibayar?')
+                    ->visible(fn(?Borrowing $record) => $record->hasUnpaidFine())
                     ->requiresConfirmation()
                     ->modalHeading('Konfirmasi Pembayaran Denda')
                     // ->modalDescription('Apakah Anda yakin denda sebesar Rp) ' . number_format($record->fine_amount) . ' sudah dibayar?')
                     ->modalSubmitActionLabel('Ya, Sudah Dibayar'),
-                
+
                 Tables\Actions\Action::make('return_book')
                     ->label('Kembalikan Buku')
                     ->icon('heroicon-o-arrow-left-circle')
@@ -338,17 +334,17 @@ class BorrowingResource extends Resource
                             'return_notes' => $data['return_notes'] ?? null,
                             'book_condition' => $data['book_condition'] ?? null,
                         ]);
-                        
+
                         // Update fine if applicable
                         $record->updateFine();
                     })
-                    ->visible(fn (Borrowing $record) => $record->status === 'approved' && !$record->returned_at)
+                    ->visible(fn(Borrowing $record) => $record->status === 'approved' && !$record->returned_at)
                     ->form([
                         Forms\Components\Textarea::make('return_notes')
                             ->label('Catatan Pengembalian')
                             ->rows(3)
                             ->helperText('Catatan kondisi buku saat dikembalikan'),
-                        
+
                         Forms\Components\TextInput::make('book_condition')
                             ->label('Kondisi Buku Saat Dikembalikan')
                             ->maxLength(255)
@@ -357,7 +353,7 @@ class BorrowingResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Konfirmasi Pengembalian Buku')
                     ->modalSubmitActionLabel('Ya, Kembalikan'),
-                
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
