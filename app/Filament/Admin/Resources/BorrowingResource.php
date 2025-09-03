@@ -43,7 +43,7 @@ class BorrowingResource extends Resource
                 Forms\Components\Section::make('Informasi Peminjam')
                     ->schema([
                         Forms\Components\Select::make('user_id')
-                            ->relationship('user', 'name')
+                            ->relationship('user', 'username')
                             ->searchable()
                             ->preload()
                             ->required()
@@ -190,7 +190,7 @@ class BorrowingResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\TextColumn::make('user.username')
                     ->label('Nama Peminjam')
                     ->searchable(),
 

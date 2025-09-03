@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\HasName; // Add this import
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasName // Implement HasName interface
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -88,5 +88,12 @@ class User extends Authenticatable
 
         // Jika semua user boleh mengakses admin panel (tidak disarankan untuk produksi):
         // return true;
+    }
+
+    // Add this method to satisfy HasName interface and avoid null user name
+    public function getFilamentName(): string
+    {
+        // Return username or email as fallback user name
+        return $this->username ?? $this->email ?? 'User';
     }
 }

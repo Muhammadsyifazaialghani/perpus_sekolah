@@ -20,7 +20,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
     protected static ?string $navigationGroup = 'Settings';
     protected static ?string $slug = 'profile';
 
-    public $name;
+    public $username;
     public $email;
     public $phone;
     public $old_password;
@@ -30,7 +30,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
     public function mount(): void
     {
         $user = auth()->user();
-        $this->name = $user->name;
+        $this->username = $user->username;
         $this->email = $user->email;
         $this->phone = $user->phone;
     }
@@ -40,7 +40,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
         return [
             Section::make('General')
                 ->schema([
-                    TextInput::make('name')
+                    TextInput::make('username')
                         ->label('Name')
                         ->required()
                         ->maxLength(255),
@@ -59,18 +59,18 @@ class Profile extends Page implements Forms\Contracts\HasForms
                     TextInput::make('old_password')
                         ->label('Old Password')
                         ->password()
-                        ->dehydrateStateUsing(fn ($state) => $state ?: null)
+                        ->dehydrateStateUsing(fn($state) => $state ?: null)
                         ->helperText('Leave empty if you don\'t want to change password'),
                     TextInput::make('new_password')
                         ->label('New Password')
                         ->password()
-                        ->dehydrateStateUsing(fn ($state) => $state ?: null)
+                        ->dehydrateStateUsing(fn($state) => $state ?: null)
                         ->minLength(8)
                         ->same('new_password_confirmation'),
                     TextInput::make('new_password_confirmation')
                         ->label('New Password (Confirm)')
                         ->password()
-                        ->dehydrateStateUsing(fn ($state) => $state ?: null),
+                        ->dehydrateStateUsing(fn($state) => $state ?: null),
                 ]),
         ];
     }
@@ -92,7 +92,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
         }
 
         // Update user profile fields
-        $user->name = $data['name'];
+        $user->username = $data['username'];
         $user->email = $data['email'];
         // $user->phone = $data['phone'];
 

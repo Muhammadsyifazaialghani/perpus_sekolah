@@ -28,22 +28,22 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Informasi Pengguna')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        Forms\Components\TextInput::make('username')
                             ->label('Nama')
                             ->required()
                             ->maxLength(255),
-                        
+
                         Forms\Components\TextInput::make('email')
                             ->label('Email')
                             ->email()
                             ->required()
                             ->maxLength(255),
-                        
+
                         Forms\Components\TextInput::make('phone')
                             ->label('Nomor Telepon')
                             ->tel()
                             ->maxLength(255),
-                        
+
                         Forms\Components\Select::make('role')
                             ->label('Role')
                             ->options([
@@ -51,15 +51,15 @@ class UserResource extends Resource
                                 'admin' => 'Admin',
                             ])
                             ->required(),
-                        
+
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->label('Email Terverifikasi'),
-                        
+
                         Forms\Components\TextInput::make('password')
                             ->label('Password')
                             ->password()
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create')
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $context): bool => $context === 'create')
                             ->maxLength(255),
                     ])
             ]);
@@ -69,34 +69,34 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nama')
+                Tables\Columns\TextColumn::make('username')
+                    ->label('Username')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Nomor Telepon')
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('role')
                     ->label('Role')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'admin' => 'danger',
                         'user' => 'success',
                     })
-                    ->formatStateUsing(fn (string $state): string => strtoupper($state)),
-                
+                    ->formatStateUsing(fn(string $state): string => strtoupper($state)),
+
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->label('Email Terverifikasi')
                     ->dateTime()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Daftar')
                     ->dateTime()
@@ -109,7 +109,7 @@ class UserResource extends Resource
                         'admin' => 'Admin',
                     ])
                     ->label('Role'),
-                
+
                 Tables\Filters\TernaryFilter::make('email_verified_at')
                     ->label('Email Terverifikasi'),
             ])

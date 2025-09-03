@@ -21,11 +21,11 @@ class AuthController extends Controller
     public function userLogin(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required','string'],
+            'username' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['name' => $credentials['username'], 'password' => $credentials['password']])) {
+        if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
 
             if (Auth::user()->role !== 'user') {
@@ -52,7 +52,7 @@ class AuthController extends Controller
     {
         Log::info('userRegister method called');
         $data = $request->validate([
-            'username' => ['required', 'string', 'max:255','unique:users,username'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
@@ -74,11 +74,11 @@ class AuthController extends Controller
     public function adminLogin(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required','string'],
+            'username' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['name' => $credentials['username'], 'password' => $credentials['password']])) {
+        if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
 
             if (Auth::user()->role !== 'admin') {
@@ -123,7 +123,7 @@ class AuthController extends Controller
         // Periksa apakah user sudah login sebelum melakukan logout
         if (Auth::check()) {
             $role = Auth::user()->role;
-            
+
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
