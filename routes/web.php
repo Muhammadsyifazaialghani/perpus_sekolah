@@ -25,17 +25,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::get('/register', [AuthController::class, 'showUserRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'userRegister'])->name('register.post');
 
-// Admin login routes
-Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
-Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.post');
-Route::post('/admin/logout', [AuthController::class, 'logout'])->middleware('auth')->name('filament.admin.auth.logout');
+// Admin login routes - REMOVED: Now using default Filament login at /admin
+// Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+// Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.post');
+// Route::post('/admin/logout', [AuthController::class, 'logout'])->middleware('auth')->name('filament.admin.auth.logout');
 
-// Filament admin logout route to fix RouteNotFoundException
-// Removed duplicate route to avoid redundancy
-
-// Admin register routes
-Route::get('/admin/register', [AuthController::class, 'showAdminRegister'])->name('admin.register');
-Route::post('/admin/register', [AuthController::class, 'adminRegister'])->name('admin.register.post');
+// Admin register routes - REMOVED: Admin registration now handled through Filament admin panel
+// Route::get('/admin/register', [AuthController::class, 'showAdminRegister'])->name('admin.register');
+// Route::post('/admin/register', [AuthController::class, 'adminRegister'])->name('admin.register.post');
 
 // Public dashboard route - accessible without login
 Route::get('/books', [UserDashboardController::class, 'publicIndex'])->name('public.dashboard');

@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         // Create admin user
         User::create([
-            'name' => 'Admin User',
+            'username' => 'admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('adminpassword'),
             'role' => 'admin',
@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
 
         // Create normal user
         User::create([
-            'name' => 'Normal User',
+            'username' => 'user',
             'email' => 'user@example.com',
             'password' => Hash::make('userpassword'),
             'role' => 'user',

@@ -66,57 +66,58 @@ class AuthController extends Controller
         return redirect()->route('user.login')->with('success', 'Registrasi Berhasil.');
     }
 
-    public function showAdminLogin()
-    {
-        return view('auth.admin-login');
-    }
+    // REMOVED: Admin login methods - Now using default Filament login at /admin
+    // public function showAdminLogin()
+    // {
+    //     return view('auth.admin-login');
+    // }
 
-    public function adminLogin(Request $request)
-    {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required'],
-        ]);
+    // public function adminLogin(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'username' => ['required', 'string'],
+    //         'password' => ['required'],
+    //     ]);
 
-        if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
-            $request->session()->regenerate();
+    //     if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
+    //         $request->session()->regenerate();
 
-            if (Auth::user()->role !== 'admin') {
-                Auth::logout();
-                return back()->withErrors([
-                    'username' => 'Unauthorized access for admin login.',
-                ]);
-            }
+    //         if (Auth::user()->role !== 'admin') {
+    //             Auth::logout();
+    //             return back()->withErrors([
+    //                 'username' => 'Unauthorized access for admin login.',
+    //             ]);
+    //         }
 
-            // Redirect langsung ke panel admin Filament (/admin)
-            return redirect()->intended('/admin');
-        }
+    //         // Redirect langsung ke panel admin Filament (/admin)
+    //         return redirect()->intended('/admin');
+    //     }
 
-        return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ]);
-    }
+    //     return back()->withErrors([
+    //         'username' => 'Username atau password salah.',
+    //     ]);
+    // }
 
-    public function showAdminRegister()
-    {
-        return view('auth.admin-register');
-    }
+    // public function showAdminRegister()
+    // {
+    //     return view('auth.admin-register');
+    // }
 
-    public function adminRegister(Request $request)
-    {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'confirmed', 'min:8'],
-        ]);
+    // public function adminRegister(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'name' => ['required', 'string', 'max:255'],
+    //         'email' => ['required', 'email', 'unique:users,email'],
+    //         'password' => ['required', 'confirmed', 'min:8'],
+    //     ]);
 
-        $data['password'] = bcrypt($data['password']);
-        $data['role'] = 'admin';
+    //     $data['password'] = bcrypt($data['password']);
+    //     $data['role'] = 'admin';
 
-        \App\Models\User::create($data);
+    //     \App\Models\User::create($data);
 
-        return redirect()->route('admin.login')->with('success', 'Registration successful. Please login.');
-    }
+    //     return redirect()->route('admin.login')->with('success', 'Registration successful. Please login.');
+    // }
 
     public function logout(Request $request)
     {
@@ -129,7 +130,7 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
 
             if ($role === 'admin') {
-                return redirect()->route('admin.login')->with('success', 'kamu berhasil logout.');
+                return redirect('/admin/login')->with('success', 'kamu berhasil logout.');
             } else {
                 return redirect()->route('user.login')->with('success', 'kamu berhasil logout.');
             }

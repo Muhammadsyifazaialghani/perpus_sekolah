@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login() // kalau mau custom login bisa ubah di sini
+            ->login(\App\Filament\Admin\Pages\Login::class) // custom login dengan username untuk email
             ->colors([
                 'primary' => Color::Blue,
             ])
@@ -57,12 +57,12 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                \App\Http\Middleware\AdminRoleMiddleware::class, // untuk filter role admin
             ])
-            
+
             // Middleware autentikasi khusus Filament
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\AdminRoleMiddleware::class, // untuk filter role admin
             ])
             
             // Resource tambahan (opsional jika mau manual)

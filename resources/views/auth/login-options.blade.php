@@ -37,7 +37,7 @@
         </a>
         
         <!-- Admin Login Option -->
-        <a href="{{ route('admin.login') }}" 
+        <a href="/admin"
            class="block my-6 p-6 bg-white border-2 border-gray-200 rounded-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:border-indigo-600 hover:-translate-y-1 hover:shadow-md">
             <div class="text-3xl mb-2">🔐</div>
             <h3 class="text-xl font-semibold text-indigo-600 mb-1">
