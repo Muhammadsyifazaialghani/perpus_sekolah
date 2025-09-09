@@ -62,9 +62,14 @@
                         </div>
                     </div>
                     <div class="py-2 text-gray-700">
-                        <a href="{{ url('/user/profile') }}" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
+                        <a href="{{ url('/user/profile') }}" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors relative">
                             <i class="fas fa-user-cog w-5 text-center text-gray-500"></i>
                             <span>Pengaturan Akun</span>
+                            @if(isset($fineCount) && $fineCount > 0)
+                                <span class="absolute top-2 right-3 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                                    +{{ $fineCount }}
+                                </span>
+                            @endif
                         </a>
                         <a href="{{ route('dashboard.borrow.history') }}" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
                             <i class="fas fa-history w-5 text-center text-gray-500"></i>

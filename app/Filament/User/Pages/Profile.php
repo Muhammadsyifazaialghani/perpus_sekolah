@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Filament\Notifications\Notification;
 
+use App\Models\Borrowing;
+
 class Profile extends Page implements Forms\Contracts\HasForms
 {
     use Forms\Concerns\InteractsWithForms;
@@ -27,12 +29,39 @@ class Profile extends Page implements Forms\Contracts\HasForms
     public $new_password;
     public $new_password_confirmation;
 
+    public $totalUnpaidFines = 0;
+
+    public $totalPaymentAmount = 0;
+
+    public $showPaymentPopup = false;
+
     public function mount(): void
     {
         $user = auth()->user();
         $this->username = $user->username;
         $this->email = $user->email;
         $this->phone = $user->phone;
+
+        $this->totalUnpaidFines = $this->calculateTotalUnpaidFines($user->id);
+        $this->totalPaymentAmount = $this->totalUnpaidFines; // For now, total payment is total unpaid fines
+    }
+
+    public function payNow()
+    {
+        $this->showPaymentPopup = true;
+    }
+
+    public function closePaymentPopup()
+    {
+        $this->showPaymentPopup = false;
+    }
+
+    protected function calculateTotalUnpaidFines($userId): float
+    {
+        return Borrowing::where('user_id', $userId)
+            ->where('fine_amount', '>', 0)
+            ->where('fine_paid', false)
+            ->sum('fine_amount');
     }
 
     protected function getFormSchema(): array

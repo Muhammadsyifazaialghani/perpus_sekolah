@@ -34,7 +34,7 @@
             <h1 class="text-2xl font-bold text-gray-900 mb-2">Registrasi</h1>
             <p class="text-sm text-gray-600 mb-6">
                 Sudah punya akun? 
-                <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-semibold">Login di sini</a>
+                <a href="{{ route('user.login') }}" class="text-indigo-600 hover:text-indigo-500 font-semibold">Login di sini</a>
             </p>
 
             {{-- Menampilkan pesan error validasi jika ada --}}

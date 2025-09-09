@@ -45,6 +45,15 @@ class Borrowing extends Model
         return $this->belongsTo(Book::class);
     }
 
+    // Add accessor for class_major to fix missing "Status Peminjam"
+    public function getClassMajorAttribute()
+    {
+        if ($this->user) {
+            return $this->user->class_major;
+        }
+        return null;
+    }
+
     /**
      * Hitung denda keterlambatan
      * Default: Rp 2.000 per hari keterlambatan

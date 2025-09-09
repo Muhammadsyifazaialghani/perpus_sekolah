@@ -40,11 +40,16 @@ class Book extends Model
     /**
      * Scope untuk mendapatkan buku paling sering dipinjam
      */
+    // File: app/Models/Book.php
+
     public function scopeMostBorrowed($query, $limit = 10, $startDate = null, $endDate = null)
     {
         return $query->withCount([
             'borrowings' => function ($query) use ($startDate, $endDate) {
-                $query->approved();
+                // Hapus baris "$query->approved();" dari sini.
+                // Anda bisa membiarkannya kosong jika tidak ada filter tanggal,
+                // atau hanya sisakan filter tanggal jika diperlukan.
+
                 if ($startDate) {
                     $query->whereDate('borrowed_at', '>=', $startDate);
                 }
@@ -53,10 +58,9 @@ class Book extends Model
                 }
             }
         ])
-        ->orderBy('borrowings_count', 'desc')
-        ->limit($limit);
+            ->orderBy('borrowings_count', 'desc')
+            ->limit($limit);
     }
-
     /**
      * Mendapatkan buku paling populer
      */

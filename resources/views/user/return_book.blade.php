@@ -41,9 +41,8 @@
                 <div>
                     <label for="book_condition" class="block text-sm font-medium text-gray-700">Kondisi Buku Saat Dikembalikan</label>
                     <select id="book_condition" name="book_condition" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                        <option value="baik">Sangat Baik</option>
-                        <option value="rusak_ringan">Ada Kerusakan Ringan</option>
-                        <option value="rusak_berat">Ada Kerusakan Berat</option>
+                        <option value="baik">Baik</option>
+                        <option value="rusak">Rusak</option>
                         <option value="hilang">Hilang</option>
                     </select>
                 </div>

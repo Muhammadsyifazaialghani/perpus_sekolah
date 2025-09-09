@@ -14,6 +14,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Section;
+
 
 class BorrowingResource extends Resource
 {
@@ -40,92 +44,54 @@ class BorrowingResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Informasi Peminjam')
+                Forms\Components\Section::make('Informasi Peminjaman')
                     ->schema([
                         Forms\Components\Select::make('user_id')
                             ->relationship('user', 'username')
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->label('Peminjam Terdaftar')
-                            ->helperText('Pilih dari daftar user yang sudah terdaftar')
+                            ->label('Peminjam')
                             ->live()
-                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                            ->afterStateUpdated(function (\Filament\Forms\Set $set, ?string $state) {
                                 if ($state) {
                                     $user = \App\Models\User::find($state);
                                     if ($user) {
                                         $set('user_email', $user->email);
-                                        $set('class_major', $user->class_major); // Mengisi kelas/jurusan
+                                        $set('class_major', $user->class . ' ' . $user->major);
                                     }
                                 } else {
                                     $set('user_email', null);
                                     $set('class_major', null);
                                 }
                             }),
-
+                        Forms\Components\Select::make('book_id')
+                            ->relationship('book', 'title')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->label('Judul Buku'),
                         Forms\Components\TextInput::make('user_email')
                             ->label('Email Peminjam')
                             ->email()
                             ->readOnly()
                             ->dehydrated(false)
                             ->helperText('Email akan terisi otomatis.'),
-
                         Forms\Components\TextInput::make('class_major')
-                            ->label('Kelas / Jurusan')
+                            ->label('Status Peminjam')
                             ->readOnly()
                             ->dehydrated(false)
-                            ->helperText('Kelas/Jurusan akan terisi otomatis.'),
-                    ])
-                    ->columns(3), // Diubah ke 3 kolom agar rapi
-
-                Forms\Components\Section::make('Informasi Buku')
-                    ->schema([
-                        Forms\Components\Select::make('book_id')
-                            ->relationship('book', 'title')
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->label('Judul Buku')
-                            ->helperText('Pilih buku yang akan dipinjam'),
-
-                        Forms\Components\TextInput::make('quantity')
-                            ->label('Jumlah')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(10)
-                            ->default(1)
-                            ->required()
-                            ->helperText('Jumlah buku yang dipinjam'),
-
-                        Forms\Components\TextInput::make('book_condition')
-                            ->label('Kondisi Buku')
-                            ->maxLength(255)
-                            ->helperText('Kondisi buku saat dipinjam'),
-                    ])
-                    ->columns(2),
-
-                Forms\Components\Section::make('Jadwal Peminjaman')
-                    ->schema([
+                            ->helperText('Status peminjam akan terisi otomatis.'),
                         Forms\Components\DatePicker::make('borrowed_at')
                             ->label('Tanggal Pinjam')
                             ->required()
                             ->default(now())
-                            ->helperText('Tanggal mulai peminjaman'),
-
+                            ->disabled(),
                         Forms\Components\DatePicker::make('due_at')
                             ->label('Tanggal Kembali')
                             ->required()
                             ->default(now()->addDays(7))
-                            ->helperText('Tanggal harus dikembalikan'),
-
-                        Forms\Components\DatePicker::make('returned_at')
-                            ->label('Tanggal Dikembalikan')
-                            ->helperText('Kosongkan jika belum dikembalikan'),
-                    ])
-                    ->columns(3),
-
-                Forms\Components\Section::make('Status & Catatan')
-                    ->schema([
+                            ->disabled(),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Menunggu Persetujuan',
@@ -135,55 +101,45 @@ class BorrowingResource extends Resource
                             ])
                             ->required()
                             ->default('approved')
-                            ->label('Status Peminjaman'),
+                            ->label('Status'),
+                        Forms\Components\TextInput::make('book_condition')
+                            ->label('Kondisi Buku')
+                            ->readOnly()
+                            ->maxLength(255)
+                            ->helperText('Kondisi buku saat dipinjam'),
+                    ])->columns(2),
 
+                Forms\Components\Section::make('Catatan')
+                    ->schema([
                         Forms\Components\Textarea::make('admin_notes')
                             ->label('Catatan Admin')
-                            ->rows(3)
-                            ->helperText('Catatan tambahan dari admin'),
-
+                            ->rows(3),
                         Forms\Components\Textarea::make('return_notes')
                             ->label('Catatan Pengembalian')
-                            ->rows(3)
-                            ->helperText('Catatan saat pengembalian'),
-                    ])
-                    ->columns(1),
+                            ->rows(3),
+                    ])->columns(1),
 
-                Forms\Components\Section::make('Denda Keterlambatan')
+                Forms\Components\Section::make('Pengembalian & Denda')
                     ->schema([
+                        Forms\Components\DateTimePicker::make('returned_at')
+                            ->label('Tanggal dan Waktu Dikembalikan')
+                            ->readOnly(),
                         Forms\Components\TextInput::make('fine_amount')
                             ->label('Jumlah Denda (Rp)')
+                            ->readOnly()
                             ->numeric()
                             ->prefix('Rp')
-                            ->disabled(fn(?Borrowing $record) => $record && $record->fine_paid)
-                            ->helperText('Denda akan dihitung otomatis saat buku dikembalikan terlambat'),
-
+                            ->disabled(fn(?Borrowing $record) => $record && $record->fine_paid),
                         Forms\Components\Toggle::make('fine_paid')
                             ->label('Denda Sudah Dibayar')
-                            ->disabled(fn(?Borrowing $record) => !$record || $record->fine_amount <= 0)
-                            ->helperText('Centang jika denda sudah dibayar'),
-
+                            ->disabled(fn(?Borrowing $record) => !$record || $record->fine_amount <= 0),
                         Forms\Components\DateTimePicker::make('fine_paid_at')
                             ->label('Tanggal Pembayaran Denda')
-                            ->disabled()
-                            ->helperText('Tanggal otomatis saat denda dibayar'),
+                            ->disabled(),
                     ])
                     ->columns(2)
-                    ->visible(fn(?Borrowing $record) => $record && $record->status === 'returned'),
+                    ->visible(fn(?Borrowing $record) => $record && ($record->status === 'returned' || $record->is_overdue)),
             ]);
-    }
-
-    public static function mutateFormDataBeforeFill(array $data): array
-    {
-        if (isset($data['user_id'])) {
-            $user = User::find($data['user_id']);
-            if ($user) {
-                $data['user_email'] = $user->email;
-                $data['class_major'] = $user->class_major;
-            }
-        }
-
-        return $data;
     }
 
     public static function table(Table $table): Table
@@ -193,73 +149,39 @@ class BorrowingResource extends Resource
                 Tables\Columns\TextColumn::make('user.username')
                     ->label('Nama Peminjam')
                     ->searchable(),
-
                 Tables\Columns\TextColumn::make('book.title')
                     ->label('Judul Buku')
                     ->searchable(),
-
-
                 Tables\Columns\TextColumn::make('borrowed_at')
-                    ->label('Tanggal Pinjam')
-                    ->date(),
-
-
+                    ->label('Tgl. Pinjam')
+                    ->date('d M Y'),
                 Tables\Columns\TextColumn::make('due_at')
-                    ->label('Tanggal Kembali')
-                    ->date(),
-
-
+                    ->label('Tgl. Kembali')
+                    ->date('d M Y'),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn(?string $state): string => match ($state) {
                         'pending' => 'warning',
                         'approved' => 'success',
                         'rejected' => 'danger',
                         'returned' => 'info',
+                        default => 'gray',
                     })
-                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                    ->formatStateUsing(fn(?string $state): string => match ($state) {
                         'pending' => 'Menunggu',
                         'approved' => 'Disetujui',
                         'rejected' => 'Ditolak',
                         'returned' => 'Dikembalikan',
+                        default => 'Tidak Diketahui',
                     }),
-
                 Tables\Columns\TextColumn::make('fine_amount')
                     ->label('Denda')
                     ->money('IDR')
-                    ->color('danger')
-                    ->sortable(),
-
+                    ->color('danger'),
                 Tables\Columns\IconColumn::make('fine_paid')
-                    ->label('Status Denda')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->tooltip(fn(?Borrowing $record) => $record->fine_paid ? 'Denda sudah dibayar' : 'Denda belum dibayar'),
-
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Diajukan')
-                    ->dateTime(),
-
-                Tables\Columns\TextColumn::make('days_remaining')
-                    ->label('Hari Tersisa')
-                    ->state(fn(Borrowing $record) => $record->days_remaining)
-                    ->color(fn(Borrowing $record) => $record->is_overdue ? 'danger' : ($record->days_remaining <= 3 ? 'warning' : 'success'))
-                    ->sortable()
-                    ->tooltip(fn(Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : ($record->days_remaining . ' hari tersisa')),
-
-                Tables\Columns\IconColumn::make('is_overdue')
-                    ->label('Status')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-exclamation-triangle')
-                    ->falseIcon('heroicon-o-check-circle')
-                    ->trueColor('danger')
-                    ->falseColor('success')
-                    ->tooltip(fn(Borrowing $record) => $record->is_overdue ? 'Sudah terlambat' : 'Masih dalam waktu'),
-
+                    ->label('Denda Lunas')
+                    ->boolean(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -270,97 +192,133 @@ class BorrowingResource extends Resource
                         'returned' => 'Dikembalikan',
                     ])
                     ->label('Status'),
-
-                Tables\Filters\Filter::make('pending')
-                    ->query(fn(Builder $query): Builder => $query->where('status', 'pending'))
-                    ->label('Menunggu Persetujuan'),
-
+                Tables\Filters\Filter::make('overdue')
+                    ->label('Jatuh Tempo')
+                    ->query(fn(Builder $query): Builder => $query->where('due_at', '<', now())->where('status', 'approved')),
             ])
             ->actions([
-                Tables\Actions\Action::make('approve')
-                    ->label('Setujui')
-                    ->icon('heroicon-o-check')
-                    ->color('success')
-                    ->action(function (Borrowing $record) {
-                        $record->update([
-                            'status' => 'approved',
-                            'approved_at' => now(),
-                        ]);
-                    })
-                    ->visible(fn(Borrowing $record) => $record->status === 'pending')
-                    ->requiresConfirmation(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\Action::make('approve')
+                        ->label('Setujui')
+                        ->icon('heroicon-o-check')
+                        ->color('success')
+                        ->action(fn(Borrowing $record) => $record->update(['status' => 'approved']))
+                        ->visible(fn(Borrowing $record) => $record->status === 'pending'),
+                    Tables\Actions\Action::make('reject')
+                        ->label('Tolak')
+                        ->icon('heroicon-o-x-mark')
+                        ->color('danger')
+                        ->action(function (Borrowing $record, array $data) {
+                            $record->update([
+                                'status' => 'rejected',
+                                'rejected_at' => now(),
+                                'admin_notes' => $data['admin_notes'] ?? null,
+                            ]);
+                        })
+                        ->visible(fn(Borrowing $record) => $record->status === 'pending')
+                        ->form([
+                            Forms\Components\Textarea::make('admin_notes')
+                                ->label('Alasan Penolakan')
+                                ->required()
+                                ->rows(3),
+                        ])
+                        ->requiresConfirmation(),
+                    Tables\Actions\Action::make('return_book')
+                        ->label('Kembalikan Buku')
+                        ->icon('heroicon-o-arrow-left-circle')
+                        ->color('primary')
+                        ->action(function (Borrowing $record, array $data) {
+                            $record->update([
+                                'status' => 'returned',
+                                'returned_at' => now(),
+                                'return_notes' => $data['return_notes'] ?? null,
+                                'book_condition' => $data['book_condition'] ?? null,
+                            ]);
 
-                Tables\Actions\Action::make('reject')
-                    ->label('Tolak')
-                    ->icon('heroicon-o-x-mark')
-                    ->color('danger')
-                    ->action(function (Borrowing $record, array $data) {
-                        $record->update([
-                            'status' => 'rejected',
-                            'rejected_at' => now(),
-                            'admin_notes' => $data['admin_notes'] ?? null,
-                        ]);
-                    })
-                    ->visible(fn(Borrowing $record) => $record->status === 'pending')
-                    ->form([
-                        Forms\Components\Textarea::make('admin_notes')
-                            ->label('Alasan Penolakan')
-                            ->required()
-                            ->rows(3),
-                    ])
-                    ->requiresConfirmation(),
+                            $book = $record->book;
+                            if ($data['book_condition'] === 'hilang') {
+                                $book->available = false;
+                            } else {
+                                $book->available = true;
+                            }
+                            $book->save();
 
-                Tables\Actions\Action::make('pay_fine')
-                    ->label('Bayar Denda')
-                    ->icon('heroicon-o-currency-dollar')
-                    ->color('warning')
-                    ->action(function (Borrowing $record) {
-                        $record->markFineAsPaid();
-                    })
-                    ->modalDescription(fn(?Borrowing $record) => 'Apakah Anda yakin denda sebesar Rp ' . number_format($record->fine_amount, 0, ',', '.') . ' sudah dibayar?')
-                    ->visible(fn(?Borrowing $record) => $record->hasUnpaidFine())
-                    ->requiresConfirmation()
-                    ->modalHeading('Konfirmasi Pembayaran Denda')
-                    // ->modalDescription('Apakah Anda yakin denda sebesar Rp) ' . number_format($record->fine_amount) . ' sudah dibayar?')
-                    ->modalSubmitActionLabel('Ya, Sudah Dibayar'),
+                            // Update fine if applicable
+                            $record->updateFine();
+                        })
+                        ->visible(fn(Borrowing $record) => $record->status === 'approved' && !$record->returned_at)
+                        ->form([
+                            Forms\Components\Textarea::make('return_notes')
+                                ->label('Catatan Pengembalian')
+                                ->rows(3)
+                                ->helperText('Catatan kondisi buku saat dikembalikan'),
 
-                Tables\Actions\Action::make('return_book')
-                    ->label('Kembalikan Buku')
-                    ->icon('heroicon-o-arrow-left-circle')
-                    ->color('primary')
-                    ->action(function (Borrowing $record, array $data) {
-                        $record->update([
-                            'returned_at' => now(),
-                            'return_notes' => $data['return_notes'] ?? null,
-                            'book_condition' => $data['book_condition'] ?? null,
-                        ]);
-
-                        // Update fine if applicable
-                        $record->updateFine();
-                    })
-                    ->visible(fn(Borrowing $record) => $record->status === 'approved' && !$record->returned_at)
-                    ->form([
-                        Forms\Components\Textarea::make('return_notes')
-                            ->label('Catatan Pengembalian')
-                            ->rows(3)
-                            ->helperText('Catatan kondisi buku saat dikembalikan'),
-
-                        Forms\Components\TextInput::make('book_condition')
-                            ->label('Kondisi Buku Saat Dikembalikan')
-                            ->maxLength(255)
-                            ->helperText('Kondisi buku saat dikembalikan'),
-                    ])
-                    ->requiresConfirmation()
-                    ->modalHeading('Konfirmasi Pengembalian Buku')
-                    ->modalSubmitActionLabel('Ya, Kembalikan'),
-
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                            Forms\Components\Select::make('book_condition')
+                                ->label('Kondisi Buku Saat Dikembalikan')
+                                ->options([
+                                    'baik' => 'Baik',
+                                    'rusak' => 'Rusak',
+                                    'hilang' => 'Hilang',
+                                ])
+                                ->required()
+                                ->helperText('Pilih kondisi buku saat dikembalikan.'),
+                        ])
+                        ->requiresConfirmation()
+                        ->modalHeading('Konfirmasi Pengembalian Buku')
+                        ->modalSubmitActionLabel('Ya, Kembalikan'),
+                    Tables\Actions\Action::make('pay_fine')
+                        ->label('Bayar Denda')
+                        ->icon('heroicon-o-currency-dollar')
+                        ->color('warning')
+                        ->action(function (Borrowing $record) {
+                            $record->markFineAsPaid();
+                        })
+                        ->modalDescription(fn(?Borrowing $record) => 'Apakah Anda yakin denda sebesar Rp ' . number_format($record->fine_amount, 0, ',', '.') . ' sudah dibayar?')
+                        ->visible(fn(?Borrowing $record) => $record->hasUnpaidFine())
+                        ->requiresConfirmation()
+                        ->modalHeading('Konfirmasi Pembayaran Denda')
+                        // ->modalDescription('Apakah Anda yakin denda sebesar Rp) ' . number_format($record->fine_amount) . ' sudah dibayar?')
+                        ->modalSubmitActionLabel('Ya, Sudah Dibayar'),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Bulk actions can be added here if needed in the future
+            ]);
+    }
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Informasi Peminjaman')
+                    ->schema([
+                        // Mengambil nama dari relasi 'user'
+                        TextEntry::make('user.username')
+                            ->label('Peminjam'),
+
+                        TextEntry::make('book.title')
+                            ->label('Judul Buku'),
+
+                        // INI SOLUSINYA: Tambahkan TextEntry untuk email dan status dari relasi
+                        TextEntry::make('user.email')
+                            ->label('Email Peminjam'),
+
+                        TextEntry::make('class_major') // Asumsi 'status' ada di model User
+                            ->label('Status Peminjam'),
+
+                        TextEntry::make('borrowed_at')
+                            ->label('Tanggal Pinjam')
+                            ->date('d/m/Y'),
+
+                        TextEntry::make('due_at')
+                            ->label('Tanggal Kembali')
+                            ->date('d/m/Y'),
+
+                        TextEntry::make('status')
+                            ->label('Status Peminjaman'),
+
+                        // ... field lainnya
+                    ])->columns(2),
             ]);
     }
 

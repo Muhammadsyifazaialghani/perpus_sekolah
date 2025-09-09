@@ -36,20 +36,25 @@ class BookResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
-                    ->maxLength(65535),
+                    ->maxLength(65535)
+                    ->required(),
                 Forms\Components\TextInput::make('isbn')
-                    ->maxLength(13),
+                    ->maxLength(13)
+                    ->required(),
                 Forms\Components\TextInput::make('year_published')
                     ->numeric()
                     ->minValue(1000)
                     ->maxValue(date('Y'))
-                    ->label('Tahun Terbit'),
+                    ->label('Tahun Terbit')
+                    ->required(),
                 Forms\Components\TextInput::make('publisher')
                     ->maxLength(255)
-                    ->label('Penerbit'),
+                    ->label('Penerbit')
+                    ->required(),
                 Forms\Components\TextInput::make('location')
                     ->maxLength(255)
-                    ->label('Lokasi'),
+                    ->label('Lokasi')
+                    ->required(),
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Gambar Sampul')
                     ->image()
@@ -70,41 +75,41 @@ class BookResource extends Resource
     }
 
     public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            Tables\Columns\ImageColumn::make('cover_image')
-                ->label('Sampul')
-                ->square() // biar rapi (opsional: bisa ->circular() kalau mau bulat)
-                ->size(60), // ukuran thumbnail di tabel
-            Tables\Columns\TextColumn::make('title')
-                ->sortable()
-                ->searchable(),
-            Tables\Columns\TextColumn::make('author')
-                ->sortable()
-                ->searchable(),
-            Tables\Columns\TextColumn::make('isbn'),
-            Tables\Columns\TextColumn::make('year_published')
-                ->label('Tahun Terbit'),
-            Tables\Columns\TextColumn::make('publisher')
-                ->label('Penerbit'),
-            Tables\Columns\TextColumn::make('location')
-                ->label('Lokasi'),
-        ])
-        ->filters([
-            //
-        ])
-        ->actions([
-            Tables\Actions\ActionGroup::make([
-                tables\Actions\ViewAction::make()->label('Lihat'),
-                Tables\Actions\EditAction::make()->label('Ubah'),
-                Tables\Actions\DeleteAction::make()->label('Hapus'),
-            ]),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
-}
+    {
+        return $table
+            ->columns([
+                Tables\Columns\ImageColumn::make('cover_image')
+                    ->label('Sampul')
+                    ->square() // biar rapi (opsional: bisa ->circular() kalau mau bulat)
+                    ->size(60), // ukuran thumbnail di tabel
+                Tables\Columns\TextColumn::make('title')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('author')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('isbn'),
+                Tables\Columns\TextColumn::make('year_published')
+                    ->label('Tahun Terbit'),
+                Tables\Columns\TextColumn::make('publisher')
+                    ->label('Penerbit'),
+                Tables\Columns\TextColumn::make('location')
+                    ->label('Lokasi'),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ActionGroup::make([
+                    tables\Actions\ViewAction::make()->label('Lihat'),
+                    Tables\Actions\EditAction::make()->label('Ubah'),
+                    Tables\Actions\DeleteAction::make()->label('Hapus'),
+                ]),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
 
 
     public static function getPages(): array

@@ -5,7 +5,10 @@ namespace App\Filament\Admin\Pages;
 use Filament\Pages\Auth\Login as BaseLogin;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Validation\ValidationException; // <-- Tambahkan ini jika belum ada
+use Filament\Notifications\Notification;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
 {
@@ -21,8 +24,8 @@ class Login extends BaseLogin
                     ->label('Username')
                     ->required()
                     ->autocomplete('username'),
-                $this->getPasswordFormComponent(),
-                $this->getRememberFormComponent(),
+                $this->getPasswordFormComponent()->required(),
+                // $this->getRememberFormComponent(),
             ])
             ->statePath('data'); // <-- Sebaiknya tambahkan statePath
     }
@@ -40,5 +43,44 @@ class Login extends BaseLogin
             'username' => $data['username'],
             'password' => $data['password'],
         ];
+    }
+
+    /**
+     * Validasi form sebelum autentikasi
+     */
+    protected function beforeAuthenticate(): void
+    {
+        $data = $this->form->getState();
+
+        // Validasi bahwa password tidak kosong
+        if (empty($data['password'])) {
+            Notification::make()
+                ->title('Password diperlukan')
+                ->body('Silakan masukkan password untuk login.')
+                ->danger()
+                ->send();
+
+            throw ValidationException::withMessages([
+                'password' => 'Password tidak boleh kosong.',
+            ]);
+        }
+
+        // Validasi bahwa username tidak kosong
+        if (empty($data['username'])) {
+            Notification::make()
+                ->title('Username diperlukan')
+                ->body('Silakan masukkan username untuk login.')
+                ->danger()
+                ->send();
+
+            throw ValidationException::withMessages([
+                'username' => 'Username tidak boleh kosong.',
+            ]);
+        }
+    }
+
+    public function render(): View
+    {
+        return view('filament.admin.pages.login');
     }
 }

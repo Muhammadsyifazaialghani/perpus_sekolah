@@ -21,25 +21,14 @@ class BorrowingReportWidget extends BaseWidget
         $startOfYear = Carbon::now()->startOfYear();
 
         return [
-            Stat::make('Total Peminjaman Hari Ini', Borrowing::getBorrowingCount($today, $today))
-                ->description('Peminjaman hari ini')
-                ->descriptionIcon('heroicon-m-arrow-up-circle')
+             Stat::make('Total Pengguna', User::count())
+                ->description('Jumlah semua pengguna terdaftar')
+                ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
-
-            Stat::make('Total Peminjaman Bulan Ini', Borrowing::getBorrowingCount($startOfMonth, $today))
-                ->description('Peminjaman bulan ini')
-                ->descriptionIcon('heroicon-m-calendar')
+            Stat::make('Total Buku', Book::count())
+                ->description('Jumlah semua buku di perpustakaan')
+                ->descriptionIcon('heroicon-m-book-open')
                 ->color('primary'),
-
-            Stat::make('Total Peminjaman Tahun Ini', Borrowing::getBorrowingCount($startOfYear, $today))
-                ->description('Peminjaman tahun ini')
-                ->descriptionIcon('heroicon-m-chart-bar')
-                ->color('info'),
-
-            Stat::make('Total Pengembalian Bulan Ini', Borrowing::getReturnCount($startOfMonth, $today))
-                ->description('Buku dikembalikan')
-                ->descriptionIcon('heroicon-m-arrow-down-circle')
-                ->color('success'),
 
             Stat::make('Total Denda Bulan Ini', 'Rp ' . number_format(Borrowing::getTotalFines($startOfMonth, $today), 0, ',', '.'))
                 ->description('Denda terkumpul')
