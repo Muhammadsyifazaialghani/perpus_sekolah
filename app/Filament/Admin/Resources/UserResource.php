@@ -39,9 +39,12 @@ class UserResource extends Resource
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('phone')
-                            ->label('Nomor Telepon')
-                            ->tel()
+                        Forms\Components\TextInput::make('password')
+                            ->label('Password')
+                            ->password()
+                            ->disabled()
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $context): bool => $context === 'create')
                             ->maxLength(255),
 
                         Forms\Components\Select::make('role')
@@ -52,15 +55,15 @@ class UserResource extends Resource
                             ])
                             ->required(),
 
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Nomor Telepon')
+                            ->tel()
+                            ->maxLength(255),
+
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->label('Email Terverifikasi'),
 
-                        Forms\Components\TextInput::make('password')
-                            ->label('Password')
-                            ->password()
-                            ->dehydrated(fn($state) => filled($state))
-                            ->required(fn(string $context): bool => $context === 'create')
-                            ->maxLength(255),
+                        
                     ])
             ]);
     }
@@ -71,13 +74,11 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('username')
                     ->label('Username')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Nomor Telepon')
@@ -94,13 +95,11 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->label('Email Terverifikasi')
-                    ->dateTime()
-                    ->sortable(),
+                    ->dateTime(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Daftar')
-                    ->dateTime()
-                    ->sortable(),
+                    ->dateTime(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('role')

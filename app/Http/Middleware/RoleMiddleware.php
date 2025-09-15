@@ -22,7 +22,8 @@ class RoleMiddleware
             return redirect('/login');
         }
 
-        if (Auth::user()->role !== $role) {
+        // Allow admin to access user routes without logout
+        if (Auth::user()->role !== $role && !(Auth::user()->role === 'admin' && $role === 'user')) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

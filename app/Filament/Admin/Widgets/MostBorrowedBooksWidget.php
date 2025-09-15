@@ -44,7 +44,7 @@ class MostBorrowedBooksWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('borrowings_count')
                     ->label('Jumlah Peminjaman')
                     ->alignCenter()
-                    ->color(fn (int $state): string => match (true) {
+                    ->color(fn(int $state): string => match (true) {
                         $state >= 10 => 'success',
                         $state >= 5 => 'warning',
                         default => 'danger',
@@ -60,13 +60,13 @@ class MostBorrowedBooksWidget extends BaseWidget
             ->defaultSort('borrowings_count', 'desc')
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                Tables\Actions\ViewAction::make()
-                    ->label('Lihat Detail')
-                    ->url(fn (Book $record): string => route('filament.admin.resources.books.edit', $record)),
-                     Tables\Actions\Action::make('borrowings')
+                    Tables\Actions\ViewAction::make()
+                        ->label('Lihat Detail')
+                        ->url(fn(Book $record): string => route('filament.admin.resources.books.edit', $record)),
+                    Tables\Actions\Action::make('borrowings')
                         ->label('Lihat Peminjaman')
                         ->icon('heroicon-o-eye')
-                        ->url(fn (Book $record): string => route('filament.admin.resources.borrowings.index', ['tableFilters[book_id][value]' => $record->id])),
+                        ->url(fn(Book $record): string => route('filament.admin.resources.borrowings.index', ['tableFilters[book_id][value]' => $record->id])),
                 ]),
             ]);
     }

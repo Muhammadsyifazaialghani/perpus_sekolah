@@ -22,6 +22,20 @@ class UserDashboardController extends Controller
         return view('user.dashboard', compact('books', 'user', 'fineCount'));
     }
 
+    public function showBooksByCategory($categoryId)
+    {
+        $books = Book::where('category_id', $categoryId)->paginate(12);
+        $category = \App\Models\Category::findOrFail($categoryId);
+        $user = auth()->user();
+
+        // Count borrowings with fines for the logged-in user
+        $fineCount = \App\Models\Borrowing::where('user_id', $user->id)
+            ->where('fine_amount', '>', 0)
+            ->count();
+
+        return view('user.dashboard', compact('books', 'category', 'user', 'fineCount'));
+    }
+
     public function publicIndex(Request $request)
     {
         $books = Book::paginate(12);
@@ -64,6 +78,12 @@ class UserDashboardController extends Controller
         if (!$book->available) {
             return redirect()->route('dashboard')->with('error', 'Buku tidak tersedia');
         }
+
+        // Check if user is admin
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Admin tidak diperbolehkan meminjam buku');
+        }
+
         return view('user.borrow_form', compact('book'));
     }
 
@@ -74,6 +94,11 @@ class UserDashboardController extends Controller
     public function confirmBorrow(Request $request, $id)
     {
         // --- Kode di bawah ini sekarang akan dijalankan ---
+
+        // Check if user is admin
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Admin tidak diperbolehkan meminjam buku');
+        }
 
         // 1. Validasi input dari form, termasuk class_major
         $request->validate([

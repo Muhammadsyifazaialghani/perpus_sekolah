@@ -29,64 +29,106 @@ class BookResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('author')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(65535)
-                    ->required(),
-                Forms\Components\TextInput::make('isbn')
-                    ->maxLength(13)
-                    ->required(),
-                Forms\Components\TextInput::make('year_published')
-                    ->numeric()
-                    ->minValue(1000)
-                    ->maxValue(date('Y'))
-                    ->label('Tahun Terbit')
-                    ->required(),
-                Forms\Components\TextInput::make('publisher')
-                    ->maxLength(255)
-                    ->label('Penerbit')
-                    ->required(),
-                Forms\Components\TextInput::make('location')
-                    ->maxLength(255)
-                    ->label('Lokasi')
-                    ->required(),
-                Forms\Components\FileUpload::make('cover_image')
-                    ->label('Gambar Sampul')
-                    ->image()
-                    ->required()
-                    ->maxSize(5120) // 5MB
-                    ->imageResizeMode('contain')
-                    ->imageResizeTargetWidth(800)
-                    ->imageResizeTargetHeight(600)
-                    ->imageResizeUpscale(false)
-                    ->preserveFilenames()
-                    ->uploadProgressIndicatorPosition('right')
-                    ->helperText('Maksimum 5MB. Gambar akan otomatis di-resize ke 800x600px untuk optimasi.'),
-                Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name')
-                    ->required()
-                    ->label('Kategori'),
+                // Membuat layout utama menjadi 3 kolom
+                Forms\Components\Grid::make()
+                    ->columns(3)
+                    ->schema([
+                        // Grup kolom kiri (mengambil 2/3 dari lebar)
+                        Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\Section::make('Informasi Utama')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('title')
+                                            ->label('Judul')
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\TextInput::make('author')
+                                            ->label('Author')
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\Textarea::make('description')
+                                            ->label('Deskripsi')
+                                            ->rows(5) // Membuat textarea lebih tinggi
+                                            ->maxLength(65535)
+                                            ->required()
+                                            ->columnSpanFull(), // Mengambil lebar penuh di section ini
+                                    ])->columns(2), // Section ini memiliki 2 kolom internal
+
+                                Forms\Components\Section::make('Detail Publikasi')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('isbn')
+                                            ->label('ISBN')
+                                            ->maxLength(13)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('year_published')
+                                            ->label('Tahun Terbit')
+                                            ->numeric()
+                                            ->minValue(1000)
+                                            ->maxValue(date('Y'))
+                                            ->required(),
+                                        Forms\Components\TextInput::make('publisher')
+                                            ->label('Penerbit')
+                                            ->maxLength(255)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('location')
+                                            ->label('Lokasi')
+                                            ->maxLength(255)
+                                            ->required(),
+                                    ])->columns(2), // Section ini juga memiliki 2 kolom
+                            ])
+                            ->columnSpan(2), // Grup ini mengambil 2 kolom dari grid utama
+
+                        // Grup kolom kanan (mengambil 1/3 dari lebar)
+                        Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\Section::make('Status & Kategori')
+                                    ->schema([
+                                        Forms\Components\Select::make('category_id')
+                                            ->relationship('category', 'name')
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->label('Kategori'),
+                                    ]),
+                                Forms\Components\Section::make('Sampul')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('cover_image')
+                                            ->label('Gambar Sampul')
+                                            ->image()
+                                            ->required()
+                                            ->maxSize(5120) // 5MB
+                                            ->imageResizeMode('contain')
+                                            ->imageResizeTargetWidth(800)
+                                            ->imageResizeTargetHeight(600)
+                                            ->imageResizeUpscale(false)
+                                            ->preserveFilenames()
+                                            ->uploadProgressIndicatorPosition('right')
+                                            ->helperText('Maksimum 5MB. Gambar akan otomatis di-resize ke 800x600px untuk optimasi.'),
+                                    ]),
+                            ])
+                            ->columnSpan(1), // Grup ini mengambil 1 kolom dari grid utama
+                    ])
             ]);
     }
 
     public static function table(Table $table): Table
     {
+        // ... (Tidak ada perubahan di sini, biarkan seperti semula)
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover_image')
                     ->label('Sampul')
-                    ->square() // biar rapi (opsional: bisa ->circular() kalau mau bulat)
-                    ->size(60), // ukuran thumbnail di tabel
+                    ->square()
+                    ->size(60),
                 Tables\Columns\TextColumn::make('title')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Judul')
+                    ->formatStateUsing(function ($state, $record) {
+                        $category = $record->category ? "<div class='text-xs text-gray-500'>{$record->category->name}</div>" : '';
+                        return $state . $category;
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('author')
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('isbn'),
                 Tables\Columns\TextColumn::make('year_published')
@@ -114,6 +156,7 @@ class BookResource extends Resource
 
     public static function getPages(): array
     {
+        // ... (Tidak ada perubahan di sini, biarkan seperti semula)
         return [
             'index' => Pages\ListBooks::route('/'),
             'create' => Pages\CreateBook::route('/create'),

@@ -19,6 +19,9 @@ class BorrowingReportWidget extends BaseWidget
         $today = Carbon::today();
         $startOfMonth = Carbon::now()->startOfMonth();
         $startOfYear = Carbon::now()->startOfYear();
+        $activeBorrowings = Borrowing::active()->count();
+        $returnedBorrowings = Borrowing::returned()->count();
+        $overdueBorrowings = Borrowing::active()->where('due_at', '<', Carbon::now())->count();
 
         return [
              Stat::make('Total Pengguna', User::count())
@@ -34,7 +37,21 @@ class BorrowingReportWidget extends BaseWidget
                 ->description('Denda terkumpul')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('warning'),
-        ];
+             Stat::make('Buku Sedang Dipinjam', $activeBorrowings)
+                ->description('Jumlah buku yang sedang dipinjam')
+                ->descriptionIcon('heroicon-m-book-open')
+                ->color('primary'),
+
+                
+            Stat::make('Buku Belum Dikembalikan (Terlambat)', $overdueBorrowings)
+                ->description('Jumlah buku yang belum dikembalikan dan terlambat')
+                ->descriptionIcon('heroicon-m-exclamation-triangle')
+                ->color('danger'),
+                Stat::make('Buku Sudah Dikembalikan', $returnedBorrowings)
+                    ->description('Jumlah buku yang sudah dikembalikan')
+                    ->descriptionIcon('heroicon-m-check-circle')
+                    ->color('success'),
+            ];
     }
 
     public static function canView(): bool

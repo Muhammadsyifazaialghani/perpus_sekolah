@@ -215,6 +215,10 @@ class BorrowingResource extends Resource
                                 'rejected_at' => now(),
                                 'admin_notes' => $data['admin_notes'] ?? null,
                             ]);
+
+                            $book = $record->book;
+                            $book->available = true;
+                            $book->save();
                         })
                         ->visible(fn(Borrowing $record) => $record->status === 'pending')
                         ->form([
@@ -244,7 +248,6 @@ class BorrowingResource extends Resource
                             }
                             $book->save();
 
-                            // Update fine if applicable
                             $record->updateFine();
                         })
                         ->visible(fn(Borrowing $record) => $record->status === 'approved' && !$record->returned_at)
@@ -261,6 +264,7 @@ class BorrowingResource extends Resource
                                     'rusak' => 'Rusak',
                                     'hilang' => 'Hilang',
                                 ])
+                                ->native(false)
                                 ->required()
                                 ->helperText('Pilih kondisi buku saat dikembalikan.'),
                         ])
@@ -278,13 +282,10 @@ class BorrowingResource extends Resource
                         ->visible(fn(?Borrowing $record) => $record->hasUnpaidFine())
                         ->requiresConfirmation()
                         ->modalHeading('Konfirmasi Pembayaran Denda')
-                        // ->modalDescription('Apakah Anda yakin denda sebesar Rp) ' . number_format($record->fine_amount) . ' sudah dibayar?')
                         ->modalSubmitActionLabel('Ya, Sudah Dibayar'),
                 ]),
             ])
-            ->bulkActions([
-                // Bulk actions can be added here if needed in the future
-            ]);
+            ->bulkActions([]);
     }
     public static function infolist(Infolist $infolist): Infolist
     {
@@ -292,18 +293,16 @@ class BorrowingResource extends Resource
             ->schema([
                 Section::make('Informasi Peminjaman')
                     ->schema([
-                        // Mengambil nama dari relasi 'user'
                         TextEntry::make('user.username')
                             ->label('Peminjam'),
 
                         TextEntry::make('book.title')
                             ->label('Judul Buku'),
 
-                        // INI SOLUSINYA: Tambahkan TextEntry untuk email dan status dari relasi
                         TextEntry::make('user.email')
                             ->label('Email Peminjam'),
 
-                        TextEntry::make('class_major') // Asumsi 'status' ada di model User
+                        TextEntry::make('class_major')
                             ->label('Status Peminjam'),
 
                         TextEntry::make('borrowed_at')
@@ -317,16 +316,17 @@ class BorrowingResource extends Resource
                         TextEntry::make('status')
                             ->label('Status Peminjaman'),
 
-                        // ... field lainnya
+                        TextEntry::make('returned_at')
+                            ->label('Tanggal Dikembalikan')
+                            ->date('d/m/Y H:i')
+                            ->visible(fn(?Borrowing $record) => $record && $record->returned_at),
                     ])->columns(2),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

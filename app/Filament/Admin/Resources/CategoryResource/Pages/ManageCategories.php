@@ -4,16 +4,16 @@ namespace App\Filament\Admin\Resources\CategoryResource\Pages;
 
 use App\Filament\Admin\Resources\CategoryResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ManageRecords;
 
-class EditCategory extends EditRecord
+class ManageCategories extends ManageRecords
 {
     protected static string $resource = CategoryResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\CreateAction::make(),
         ];
     }
 }

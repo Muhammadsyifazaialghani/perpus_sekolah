@@ -52,6 +52,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Route untuk daftar kategori
     Route::get('/dashboard/categories', [UserDashboardController::class, 'listCategories'])->name('dashboard.categories');
+    Route::get('/dashboard/categories/{category}', [UserDashboardController::class, 'showBooksByCategory'])->name('dashboard.category.books');
 
     // Route untuk pengembalian buku
     Route::get('/dashboard/return-book', [UserDashboardController::class, 'returnBookForm'])->name('dashboard.return.form');

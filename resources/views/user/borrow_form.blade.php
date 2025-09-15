@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
+@if(auth()->check() && auth()->user()->role === 'admin')
+    <script>
+        window.location.href = '{{ route("dashboard") }}';
+    </script>
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="text-center">
+            <p class="text-red-600 font-semibold">Admin tidak diperbolehkan meminjam buku</p>
+            <a href="{{ route('dashboard') }}" class="text-blue-600 hover:underline">Kembali ke Dashboard</a>
+        </div>
+    </div>
+@else
 <div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-50 via-gray-50 to-blue-50 animate-fadeIn">
 
     <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-3xl">
@@ -157,4 +168,5 @@
                 });
             });
         </script>
+@endif
 @endsection

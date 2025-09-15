@@ -2,41 +2,96 @@
 
 namespace App\Filament\Admin\Pages;
 
-use Filament\Pages\Auth\Login as BaseLogin;
-use Filament\Forms\Form;
+use Filament\Actions\Action;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Notifications\Notification;
+use Filament\Pages\Auth\Login as BaseLogin;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
 {
-    /**
-     * Metode ini untuk membangun form login.
-     * Bagian ini sudah benar.
-     */
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('username')
-                    ->label('Username')
-                    ->required()
-                    ->autocomplete('username'),
-                $this->getPasswordFormComponent()->required(),
-                // $this->getRememberFormComponent(),
+                $this->getUsernameFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
             ])
-            ->statePath('data'); // <-- Sebaiknya tambahkan statePath
+            ->statePath('data');
+    }
+    protected function getUsernameFormComponent(): Component
+    {
+        return TextInput::make('username')
+            ->label('Username')
+            ->required()
+            ->autocomplete()
+            ->autofocus();
     }
 
     /**
-     * PERBAIKAN: Tambahkan metode ini.
+     * Overrides the authenticate method to use 'username'.
      *
-     * Metode ini akan mengambil data dari form ('username' dan 'password')
-     * dan menyiapkannya untuk proses otentikasi di backend.
-     * Ini akan menggantikan perilaku default yang mencari 'email'.
+     * @return \Illuminate\Http\Response|null
      */
+    public function authenticate(): ?LoginResponse
+    {
+        try {
+            $data = $this->form->getState();
+
+            if (!Filament::auth()->attempt([
+                'username' => $data['username'],
+                'password' => $data['password'],
+            ], $data['remember'])) {
+                Notification::make()
+                    ->title('Login Gagal')
+                    ->body('Username atau password yang Anda masukkan salah!')
+                    ->danger()
+                    ->duration(5000)
+                    ->send();
+
+                throw ValidationException::withMessages([
+                    'data.username' => 'Kredensial yang Anda masukkan tidak valid.',
+                ]);
+            }
+        } catch (ValidationException $exception) {
+            throw $exception;
+        }
+
+        /** @var \App\Models\User $user */
+        $user = Filament::auth()->user();
+
+        if (!method_exists($user, 'canAccessPanel') || !$user->canAccessPanel(Filament::getCurrentPanel())) {
+            Filament::auth()->logout();
+
+            Notification::make()
+                ->title('Akses Ditolak')
+                ->body('Maaf, Anda tidak memiliki izin untuk mengakses panel admin.')
+                ->danger()
+                ->persistent()
+                ->send();
+
+            return null;
+        }
+
+        Notification::make()
+            ->title('Selamat Datang!')
+            ->body('Berhasil masuk ke panel admin ' . $user->name)
+            ->success()
+            ->duration(3000)
+            ->send();
+
+        session()->regenerate();
+
+
+        return app(LoginResponse::class);
+    }
+
     protected function getCredentialsFromFormData(array $data): array
     {
         return [
@@ -44,43 +99,8 @@ class Login extends BaseLogin
             'password' => $data['password'],
         ];
     }
-
-    /**
-     * Validasi form sebelum autentikasi
-     */
-    protected function beforeAuthenticate(): void
-    {
-        $data = $this->form->getState();
-
-        // Validasi bahwa password tidak kosong
-        if (empty($data['password'])) {
-            Notification::make()
-                ->title('Password diperlukan')
-                ->body('Silakan masukkan password untuk login.')
-                ->danger()
-                ->send();
-
-            throw ValidationException::withMessages([
-                'password' => 'Password tidak boleh kosong.',
-            ]);
-        }
-
-        // Validasi bahwa username tidak kosong
-        if (empty($data['username'])) {
-            Notification::make()
-                ->title('Username diperlukan')
-                ->body('Silakan masukkan username untuk login.')
-                ->danger()
-                ->send();
-
-            throw ValidationException::withMessages([
-                'username' => 'Username tidak boleh kosong.',
-            ]);
-        }
-    }
-
-    public function render(): View
-    {
-        return view('filament.admin.pages.login');
-    }
+    // public function render(): View
+    // {
+    //     return view('filament.admin.pages.login');
+    // }
 }

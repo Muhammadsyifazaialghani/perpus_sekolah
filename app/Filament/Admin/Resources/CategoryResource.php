@@ -45,7 +45,6 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->sortable()
                     ->searchable()
                     ->label('Nama Kategori'),
                 Tables\Columns\TextColumn::make('description')
@@ -56,7 +55,7 @@ class CategoryResource extends Resource
                     ->label('Jumlah Buku'),
             ])
             ->filters([
-                //
+                
             ])
             ->actions([
                Tables\Actions\ActionGroup::make([
@@ -82,9 +81,7 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ManageCategories::route('/'),
         ];
     }
 }

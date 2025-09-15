@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\FilamentUser;
+
+use Filament\Panel;
+
+
 
 class User extends Authenticatable implements HasName // Implement HasName interface
 {
@@ -68,8 +73,8 @@ class User extends Authenticatable implements HasName // Implement HasName inter
                 }
             }
         ])
-        ->orderBy('borrowings_count', 'desc')
-        ->limit($limit);
+            ->orderBy('borrowings_count', 'desc')
+            ->limit($limit);
     }
 
     /**
@@ -80,15 +85,19 @@ class User extends Authenticatable implements HasName // Implement HasName inter
         return self::mostActive($limit, $startDate, $endDate)->get();
     }
 
-    public function canAccessFilament(): bool
-    {
-        // Contoh: Hanya user dengan role 'admin' yang bisa mengakses Filament
-        // Pastikan user yang Anda gunakan untuk login memiliki role='admin' di database
-        return $this->role === 'admin';
+    public function canAccessPanel(Panel $panel): bool
 
-        // Jika semua user boleh mengakses admin panel (tidak disarankan untuk produksi):
-        // return true;
+    {
+
+        // Logika ini sudah benar!
+
+        // Hanya user dengan role 'admin' yang bisa mengakses panel Filament.
+
+        return $this->role === 'admin';
     }
+
+
+
 
     // Add this method to satisfy HasName interface and avoid null user name
     public function getFilamentName(): string
