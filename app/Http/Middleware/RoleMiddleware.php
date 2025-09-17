@@ -27,7 +27,7 @@ class RoleMiddleware
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect('/login')->withErrors(['email' => 'Unauthorized access for this role.']);
+            return redirect('/login')->withErrors(['email' => 'Akses ditolak.']);
         }
 
         return $next($request);

@@ -87,10 +87,6 @@ class UserDashboardController extends Controller
         return view('user.borrow_form', compact('book'));
     }
 
-    // app/Http/Controllers/UserDashboardController.php
-
-    // app/Http/Controllers/UserDashboardController.php
-
     public function confirmBorrow(Request $request, $id)
     {
         // --- Kode di bawah ini sekarang akan dijalankan ---
