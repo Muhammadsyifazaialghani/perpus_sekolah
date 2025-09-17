@@ -45,7 +45,6 @@ class Borrowing extends Model
         return $this->belongsTo(Book::class);
     }
 
-    // Add accessor for class_major to fix missing "Status Peminjam"
     public function getClassMajorAttribute()
     {
         if ($this->user) {
@@ -54,10 +53,6 @@ class Borrowing extends Model
         return null;
     }
 
-    /**
-     * Hitung denda keterlambatan
-     * Default: Rp 2.000 per hari keterlambatan
-     */
     public function calculateFine(): float
     {
         if ($this->returned_at && $this->due_at) {
@@ -66,25 +61,19 @@ class Borrowing extends Model
             
             if ($returnDate->gt($dueDate)) {
                 $daysLate = $dueDate->diffInDays($returnDate);
-                return $daysLate * 2000; // Rp 2.000 per hari
+                return $daysLate * 2000;
             }
         }
         
         return 0;
     }
 
-    /**
-     * Update denda berdasarkan perhitungan
-     */
     public function updateFine(): void
     {
         $this->fine_amount = $this->calculateFine();
         $this->save();
     }
 
-    /**
-     * Tandai denda sudah dibayar
-     */
     public function markFineAsPaid(): void
     {
         $this->fine_paid = true;
@@ -92,17 +81,11 @@ class Borrowing extends Model
         $this->save();
     }
 
-    /**
-     * Cek apakah ada denda yang belum dibayar
-     */
     public function hasUnpaidFine(): bool
     {
         return $this->fine_amount > 0 && !$this->fine_paid;
     }
 
-    /**
-     * Get hari keterlambatan
-     */
     public function getDaysLateAttribute(): int
     {
         if ($this->returned_at && $this->due_at) {
@@ -115,18 +98,12 @@ class Borrowing extends Model
         return 0;
     }
 
-    /**
-     * Scope untuk peminjaman aktif (disetujui dan belum dikembalikan)
-     */
     public function scopeActive($query)
     {
         return $query->where('status', 'approved')
                     ->whereNull('returned_at');
     }
 
-    /**
-     * Hitung hari tersisa sebelum jatuh tempo
-     */
     public function getDaysRemainingAttribute(): int
     {
         if ($this->due_at && !$this->returned_at) {
@@ -139,9 +116,6 @@ class Borrowing extends Model
         return 0;
     }
 
-    /**
-     * Cek apakah peminjaman sudah terlambat
-     */
     public function getIsOverdueAttribute(): bool
     {
         if ($this->due_at && !$this->returned_at) {
@@ -154,9 +128,6 @@ class Borrowing extends Model
         return false;
     }
 
-    /**
-     * Scope untuk filter berdasarkan periode waktu
-     */
     public function scopeDateRange($query, $startDate = null, $endDate = null)
     {
         if ($startDate) {
@@ -170,25 +141,16 @@ class Borrowing extends Model
         return $query;
     }
 
-    /**
-     * Scope untuk peminjaman yang sudah disetujui
-     */
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved');
     }
 
-    /**
-     * Scope untuk peminjaman yang sudah dikembalikan
-     */
     public function scopeReturned($query)
     {
         return $query->where('status', 'returned');
     }
 
-    /**
-     * Hitung total peminjaman dalam periode tertentu
-     */
     public static function getBorrowingCount($startDate = null, $endDate = null): int
     {
         return self::approved()
@@ -196,9 +158,6 @@ class Borrowing extends Model
             ->count();
     }
 
-    /**
-     * Hitung total pengembalian dalam periode tertentu
-     */
     public static function getReturnCount($startDate = null, $endDate = null): int
     {
         return self::returned()
@@ -206,9 +165,6 @@ class Borrowing extends Model
             ->count();
     }
 
-    /**
-     * Hitung total denda dalam periode tertentu
-     */
     public static function getTotalFines($startDate = null, $endDate = null): float
     {
         return self::returned()

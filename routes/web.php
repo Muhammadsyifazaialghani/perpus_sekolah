@@ -48,8 +48,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard/return-book', [UserDashboardController::class, 'returnBookForm'])->name('dashboard.return.form');
     Route::post('/dashboard/return-book', [UserDashboardController::class, 'processReturn'])->name('dashboard.return.process');
 
-    // Route untuk mengakses BorrowingReport
-    Route::get('/dashboard/borrowing-report', [UserDashboardController::class, 'borrowingReport'])->name('dashboard.borrowing.report');
 });
 
 // Admin dashboard route - ensure admin role and redirect non-admin users

@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Filament\Models\Contracts\HasName; // Add this import
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Filament\Models\Contracts\FilamentUser;
-
 use Filament\Panel;
 
-
-
-class User extends Authenticatable implements HasName // Implement HasName interface
+class User extends Authenticatable implements HasName
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -27,7 +24,7 @@ class User extends Authenticatable implements HasName // Implement HasName inter
         'email',
         'password',
         'role',
-        'class_major', // tambahkan ini
+        'class_major', 
     ];
 
     /**
@@ -49,17 +46,11 @@ class User extends Authenticatable implements HasName // Implement HasName inter
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Relasi dengan peminjaman
-     */
     public function borrowings()
     {
         return $this->hasMany(Borrowing::class);
     }
 
-    /**
-     * Scope untuk mendapatkan anggota teraktif
-     */
     public function scopeMostActive($query, $limit = 10, $startDate = null, $endDate = null)
     {
         return $query->withCount([
@@ -77,9 +68,6 @@ class User extends Authenticatable implements HasName // Implement HasName inter
             ->limit($limit);
     }
 
-    /**
-     * Mendapatkan anggota teraktif
-     */
     public static function getMostActiveUsers($limit = 10, $startDate = null, $endDate = null)
     {
         return self::mostActive($limit, $startDate, $endDate)->get();
@@ -89,20 +77,11 @@ class User extends Authenticatable implements HasName // Implement HasName inter
 
     {
 
-        // Logika ini sudah benar!
-
-        // Hanya user dengan role 'admin' yang bisa mengakses panel Filament.
-
         return $this->role === 'admin';
     }
 
-
-
-
-    // Add this method to satisfy HasName interface and avoid null user name
     public function getFilamentName(): string
     {
-        // Return username or email as fallback user name
         return $this->username ?? $this->email ?? 'User';
     }
 }
