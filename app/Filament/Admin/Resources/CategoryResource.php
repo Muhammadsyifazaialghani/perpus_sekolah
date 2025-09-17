@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\BookResource;
+
 use App\Filament\Admin\Resources\CategoryResource\Pages;
 use App\Filament\Admin\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
@@ -54,6 +56,7 @@ class CategoryResource extends Resource
                     ->counts('books')
                     ->label('Jumlah Buku'),
             ])
+            ->recordUrl(fn (Category $record): string => BookResource::getUrl('index', ['tableFilters' => ['category' => ['value' => $record->id]]]))
             ->filters([
                 
             ])

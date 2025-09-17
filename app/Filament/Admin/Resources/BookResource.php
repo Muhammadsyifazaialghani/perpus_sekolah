@@ -139,7 +139,9 @@ class BookResource extends Resource
                     ->label('Lokasi'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->label('Kategori'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
