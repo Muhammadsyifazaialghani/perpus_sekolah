@@ -43,7 +43,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
         $this->phone = $user->phone;
 
         $this->totalUnpaidFines = $this->calculateTotalUnpaidFines($user->id);
-        $this->totalPaymentAmount = $this->totalUnpaidFines; // For now, total payment is total unpaid fines
+        $this->totalPaymentAmount = $this->totalUnpaidFines;
     }
 
     public function payNow()
@@ -78,10 +78,6 @@ class Profile extends Page implements Forms\Contracts\HasForms
                         ->email()
                         ->required()
                         ->maxLength(255),
-                    // TextInput::make('phone')
-                    //     ->label('Phone')
-                    //     ->required()
-                    //     ->maxLength(20),
                 ]),
             Section::make('Password')
                 ->schema([
@@ -111,7 +107,6 @@ class Profile extends Page implements Forms\Contracts\HasForms
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        // Validate old password if new password is set
         if ($data['new_password']) {
             if (! $data['old_password'] || ! Hash::check($data['old_password'], $user->password)) {
                 throw ValidationException::withMessages([
@@ -120,12 +115,9 @@ class Profile extends Page implements Forms\Contracts\HasForms
             }
         }
 
-        // Update user profile fields
         $user->username = $data['username'];
         $user->email = $data['email'];
-        // $user->phone = $data['phone'];
 
-        // Update password if new password is set
         if ($data['new_password']) {
             $user->password = Hash::make($data['new_password']);
         }

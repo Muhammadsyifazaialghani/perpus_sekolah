@@ -56,7 +56,7 @@ class Login extends BaseLogin
                     ->send();
 
                 throw ValidationException::withMessages([
-                    'data.username' => 'Kredensial yang Anda masukkan tidak valid.',
+                    'data.username' => 'Username atau password yang Anda masukkan salah!',
                 ]);
             }
         } catch (ValidationException $exception) {

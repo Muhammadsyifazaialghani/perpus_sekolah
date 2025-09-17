@@ -19,6 +19,7 @@ Route::get('/login', function () {
 Route::get('/user/login', [AuthController::class, 'showUserLogin'])->name('user.login');
 Route::post('/user/login', [AuthController::class, 'userLogin'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // User register routes
 Route::get('/register', [AuthController::class, 'showUserRegister'])->name('register');

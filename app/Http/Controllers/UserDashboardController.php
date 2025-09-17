@@ -218,12 +218,6 @@ class UserDashboardController extends Controller
         return redirect()->route('dashboard')->with('success', 'Buku berhasil dikembalikan pada ' . $currentDateTime->format('d M Y H:i:s') . ' tepat waktu!');
     }
 
-    public function borrowingReport()
-    {
-        // Redirect ke halaman admin borrowing report
-        return redirect('/admin/borrowings/report');
-    }
-
     public function welcome(Request $request)
     {
         $featuredBooks = Book::withCount('borrowings')

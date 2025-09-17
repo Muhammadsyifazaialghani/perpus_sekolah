@@ -1,40 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perpustakaan Sekolah</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
-    <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.8s ease-out;
-            opacity: 0;
-            /* Mulai dari transparan untuk mencegah FOUC */
-            animation-fill-mode: forwards;
-            /* Memastikan state akhir animasi tetap berlaku */
-        }
-    </style>
 
     <script>
         tailwind.config = {
@@ -56,23 +31,6 @@
             document.getElementById('loginModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
-
-        // Close modal when clicking outside
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('loginModal');
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    hideLoginModal();
-                }
-            });
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('loginModal').style.display === 'flex') {
-                hideLoginModal();
-            }
-        });
     </script>
 </head>
 
@@ -84,23 +42,22 @@
             <div class="hidden sm:flex items-center gap-4">
                 @if(auth()->check())
                 @if(auth()->user()->role === 'admin')
-                <a href="{{ url('/admin') }}" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors">Admin Dashboard</a>
+                <a href="{{ url('/admin') }}" class="text-sm font-semibold text-slate-600 hover:text-blue-600">Admin Dashboard</a>
                 @else
-                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors">Dashboard</a>
+                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-600 hover:text-blue-600">Dashboard</a>
                 @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-md transition-all duration-300 hover:bg-blue-700 hover:-translate-y-0.5">Logout</button>
                 </form>
                 @else
-                <a href="{{ route('public.dashboard') }}" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors">Semua Buku</a>
+                <a href="{{ route('public.dashboard') }}" class="text-sm font-semibold text-slate-600 hover:text-blue-600">Semua Buku</a>
                 <button onclick="showLoginModal()" class="px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-md transition-all duration-300 hover:bg-blue-700 hover:-translate-y-0.5">Login</button>
                 @endif
             </div>
         </nav>
     </header>
 
-    <!-- Login Modal -->
     <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
         <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 relative animate-fade-in">
             <button onclick="hideLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
@@ -110,7 +67,7 @@
             </button>
             <h2 class="text-2xl font-bold text-slate-900 mb-6">Pilih Jenis Login</h2>
             <div class="space-y-4">
-                <a href="{{ route('user.login') }}" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                <a href="{{ route('user.login') }}" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100">
                     <span class="p-2 bg-blue-100 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -122,7 +79,7 @@
                     </div>
                 </a>
 
-                <a href="/admin" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                <a href="/admin" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100">
                     <span class="p-2 bg-blue-100 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -217,9 +174,6 @@
                 </div>
             </div>
         </section>
-
-        {{-- Sisa bagian lainnya tetap sama --}}
-
     </main>
 
     <footer class="border-t border-slate-200 mt-20">

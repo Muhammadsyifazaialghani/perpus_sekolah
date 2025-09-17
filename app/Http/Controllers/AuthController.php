@@ -53,8 +53,14 @@ class AuthController extends Controller
         Log::info('userRegister method called');
         $data = $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'confirmed', 'min:8'],
+            'email' => ['required', 'email', 'unique:users,email', 'regex:/^[^@]+@gmail\.com$/'],
+            'password' => ['required', 'confirmed', 'size:8'],
+        ], [
+            'username.unique' => 'Username sudah digunakan',
+            'email.regex' => 'Email harus menggunakan @gmail.com',
+            'password.size' => 'Password harus 8 karakter',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai',
+
         ]);
 
         $data['password'] = bcrypt($data['password']);
