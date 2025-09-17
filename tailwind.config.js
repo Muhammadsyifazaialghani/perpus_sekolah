@@ -12,7 +12,6 @@ export default {
                 success: colors.green,
                 warning: colors.yellow,
             },
-            // --- PENAMBAHAN DIMULAI DI SINI ---
             keyframes: {
               fadeIn: {
                 '0%': { 
@@ -28,7 +27,6 @@ export default {
             animation: {
               fadeIn: 'fadeIn 0.8s ease-out forwards',
             }
-            // --- PENAMBAHAN BERAKHIR DI SINI ---
         },
     },
     plugins: [forms, typography],

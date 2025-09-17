@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
 
@@ -9,7 +8,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/', [UserDashboardController::class, 'welcome']);
-Route::get('/return/book', [App\Http\Controllers\UserDashboardController::class, 'returnBookForm'])->name('return.book');    
+Route::get('/return/book', [App\Http\Controllers\UserDashboardController::class, 'returnBookForm'])->name('return.book');
 
 // Login options page
 Route::get('/login', function () {
@@ -24,15 +23,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 // User register routes
 Route::get('/register', [AuthController::class, 'showUserRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'userRegister'])->name('register.post');
-
-// Admin login routes - REMOVED: Now using default Filament login at /admin
-// Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
-// Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.post');
-// Route::post('/admin/logout', [AuthController::class, 'logout'])->middleware('auth')->name('filament.admin.auth.logout');
-
-// Admin register routes - REMOVED: Admin registration now handled through Filament admin panel
-// Route::get('/admin/register', [AuthController::class, 'showAdminRegister'])->name('admin.register');
-// Route::post('/admin/register', [AuthController::class, 'adminRegister'])->name('admin.register.post');
 
 // Public dashboard route - accessible without login
 Route::get('/books', [UserDashboardController::class, 'publicIndex'])->name('public.dashboard');
@@ -57,7 +47,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Route untuk pengembalian buku
     Route::get('/dashboard/return-book', [UserDashboardController::class, 'returnBookForm'])->name('dashboard.return.form');
     Route::post('/dashboard/return-book', [UserDashboardController::class, 'processReturn'])->name('dashboard.return.process');
-    
+
     // Route untuk mengakses BorrowingReport
     Route::get('/dashboard/borrowing-report', [UserDashboardController::class, 'borrowingReport'])->name('dashboard.borrowing.report');
 });
