@@ -10,9 +10,9 @@ Route::get('/', function () {
 Route::get('/', [UserDashboardController::class, 'welcome']);
 Route::get('/return/book', [App\Http\Controllers\UserDashboardController::class, 'returnBookForm'])->name('return.book');
 
-// Login options page
+// Login options page - removed, redirect to user login
 Route::get('/login', function () {
-    return view('auth.login-options');
+    return redirect()->route('user.login');
 })->name('login');
 
 // User login routes
