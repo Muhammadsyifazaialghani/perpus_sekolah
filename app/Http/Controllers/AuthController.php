@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -51,7 +52,7 @@ class AuthController extends Controller
     public function userRegister(Request $request)
     {
         Log::info('userRegister method called');
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['required', 'email', 'unique:users,email', 'regex:/^[^@]+@gmail\.com$/'],
             'password' => ['required', 'confirmed', 'size:8'],
@@ -60,9 +61,16 @@ class AuthController extends Controller
             'email.regex' => 'Email harus menggunakan @gmail.com',
             'password.size' => 'Password harus 8 karakter',
             'password.confirmed' => 'Konfirmasi password tidak sesuai',
-
         ]);
 
+        if ($validator->fails()) {
+            return redirect()->route('user.login')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('registration_error', true);
+        }
+
+        $data = $validator->validated();
         $data['password'] = bcrypt($data['password']);
         $data['role'] = 'user';
 
