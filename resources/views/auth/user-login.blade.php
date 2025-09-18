@@ -5,13 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login - Perpustakaan Sekolah</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for social icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -20,9 +15,7 @@
     <div class="container mx-auto p-4">
         <div class="flex flex-col lg:flex-row w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
 
-            <!-- Left Column: Illustration & Welcome Text -->
             <div class="w-full lg:w-1/2 bg-gray-50 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
-                <!-- You can replace this SVG with your own illustration -->
                 <i class="fas fa-book-open text-3xl"></i>
                 <rect x="10" y="30" width="180" height="100" rx="10" fill="#E5E7EB" />
                 <rect x="25" y="45" width="150" height="70" rx="5" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2" />
@@ -35,7 +28,6 @@
                 <p class="text-gray-500">Masuk untuk mengakses koleksi perpustakaan digital kami.</p>
             </div>
 
-            <!-- Right Column: Login Form -->
             <div class="w-full lg:w-1/2 p-8 sm:p-12">
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Login</h1>
                 <p class="text-gray-500 mb-8">
@@ -43,7 +35,6 @@
                     <a href="{{ route('register') }}" class="font-semibold text-indigo-600 hover:underline">Daftar di sini</a>
                 </p>
 
-                <!-- Display Messages -->
                 @if ($errors->any())
                 <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6 border border-red-200 text-sm">
                     <ul class="list-disc list-inside">
@@ -86,7 +77,7 @@
 
                 <div class="relative my-8">
                     <div class="absolute inset-0 flex items-center">
-                        <!-- <div class="w-full border-t border-gray-300"></div> -->
+                    
                     </div>
                 </div>
                 <div class="text-center mt-8">
