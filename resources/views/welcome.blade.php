@@ -7,35 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perpustakaan Sekolah</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Poppins', 'sans-serif'],
-                    },
-                },
-            },
-        };
-
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function hideLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-    </script>
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800 leading-relaxed">
-
+<!-- BERANDA PERPUS SEKOLAH -->
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-slate-200">
         <nav class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
             <a href="{{ url('/') }}" class="text-xl font-bold text-blue-600">PerpusSekolah</a>
@@ -57,42 +33,6 @@
             </div>
         </nav>
     </header>
-
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 relative animate-fade-in">
-            <button onclick="hideLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-            <h2 class="text-2xl font-bold text-slate-900 mb-6">Pilih Jenis Login</h2>
-            <div class="space-y-4">
-                <a href="{{ route('user.login') }}" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100">
-                    <span class="p-2 bg-blue-100 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                    </span>
-                    <div class="text-left">
-                        <h3 class="font-semibold text-slate-900">Login sebagai User</h3>
-                        <p class="text-sm text-slate-500">Untuk siswa, guru, dan staf sekolah yang sudah terdaftar.</p>
-                    </div>
-                </a>
-
-                <a href="/admin" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100">
-                    <span class="p-2 bg-blue-100 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </span>
-                    <div class="text-left">
-                        <h3 class="font-semibold text-slate-900">Login sebagai Admin</h3>
-                        <p class="text-sm text-slate-500">Untuk administrator dan staf perpustakaan.</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
 
     <main class="max-w-7xl mx-auto px-5 py-12 md:py-16">
         <div class="text-center py-16 md:py-24 animate-fade-in">
@@ -131,7 +71,7 @@
                 </div>
                 @endforeach
                 @else
-                {{-- Pesan jika tidak ada buku pilihan yang dikirim dari controller --}}
+                <!-- PESAN JIKA TIDAK ADA BUKU PILIHAN -->
                 <div class="md:col-span-2 lg:col-span-3 text-center text-slate-500 py-10">
                     <p>Saat ini tidak ada buku pilihan untuk ditampilkan.</p>
                 </div>
@@ -175,13 +115,69 @@
             </div>
         </section>
     </main>
+<!--LOGIN POP UP 2 USER-->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 relative animate-fade-in">
+            <button onclick="hideLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Pilih Jenis Login</h2>
+            <div class="space-y-4">
+                <a href="{{ route('user.login') }}" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100">
+                    <span class="p-2 bg-blue-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </span>
+                    <div class="text-left">
+                        <h3 class="font-semibold text-slate-900">Login sebagai User</h3>
+                        <p class="text-sm text-slate-500">Untuk siswa, guru, dan staf sekolah yang sudah terdaftar.</p>
+                    </div>
+                </a>
+
+                <a href="/admin" class="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 rounded-lg hover:bg-blue-100">
+                    <span class="p-2 bg-blue-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </span>
+                    <div class="text-left">
+                        <h3 class="font-semibold text-slate-900">Login sebagai Admin</h3>
+                        <p class="text-sm text-slate-500">Untuk administrator dan staf perpustakaan.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <footer class="border-t border-slate-200 mt-20">
         <div class="max-w-7xl mx-auto px-5 py-6 text-center text-slate-500 text-sm">
             <p>&copy; {{ date('Y') }} Perpustakaan Sekolah. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Poppins', 'sans-serif'],
+                    },
+                },
+            },
+        };
 
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
 </body>
 
 </html>
