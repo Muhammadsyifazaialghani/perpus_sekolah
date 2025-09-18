@@ -24,7 +24,7 @@
 
             <nav class="flex gap-1 sm:gap-2 order-3 w-full justify-around mt-2 pt-2 border-t border-white/20 sm:order-none sm:w-auto sm:mt-0 sm:pt-0 sm:border-0">
                 @if(auth()->check() && auth()->user()->role === 'admin')
-                <!-- Admin Navigation -->
+                <!-- ADMIN NAVBAR -->
                 <a href="{{ route('dashboard') }}" id="nav-buku" class="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
                     <i class="fas fa-book text-base sm:text-lg"></i>
                     <span class="text-sm sm:text-base font-medium hidden md:inline">Buku</span>
@@ -38,7 +38,7 @@
                     <span class="text-sm sm:text-base font-medium hidden md:inline">Pengembalian</span>
                 </a>
                 @else
-                <!-- User Navigation -->
+                <!-- USER NAVBAR -->
                 <a href="{{ route('dashboard') }}" id="nav-buku" class="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md transition-all duration-300 hover:bg-white/15 hover:-translate-y-0.5">
                     <i class="fas fa-book text-base sm:text-lg"></i>
                     <span class="text-sm sm:text-base font-medium hidden md:inline">Buku</span>
@@ -57,7 +57,6 @@
             <div class="relative order-2 sm:order-none w-full flex justify-center sm:w-auto sm:block">
                 @if(auth()->check())
                 @if(auth()->user()->role === 'admin')
-                <!-- Admin Profile Button -->
                 <button id="profile-button" class="flex items-center gap-2.5 p-1.5 rounded-full transition-colors duration-300 hover:bg-white/15">
                     <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-semibold text-base">
                         <span>{{ substr(auth()->user()->username, 0, 1) }}</span>
@@ -80,6 +79,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- HIDE PENGATURAN AKUN DI ADMIN -->
                     <!-- <div class="py-2 text-gray-700">
                                 <a href="/admin/profile" class="flex items-center gap-3 px-5 py-3 text-base hover:bg-gray-100 transition-colors">
                                     <i class="fas fa-user-cog w-5 text-center text-gray-500"></i>
@@ -97,7 +97,6 @@
                     </form>
                 </div>
                 @else
-                <!-- User Profile Button -->
                 <button id="profile-button" class="flex items-center gap-2.5 p-1.5 rounded-full transition-colors duration-300 hover:bg-white/15">
                     <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-semibold text-base">
                         <span>{{ substr(auth()->user()->username, 0, 1) }}</span>
@@ -147,13 +146,12 @@
                 </div>
                 @endif
                 @else
-                <!-- Login button to open modal -->
                 <button id="login-button" class="flex items-center gap-2 px-4 py-2 rounded-md transition-colors duration-300 hover:bg-white/15 focus:outline-none">
                     <i class="fas fa-sign-in-alt"></i>
                     <span class="font-medium text-base">Login</span>
                 </button>
 
-                <!-- Login modal -->
+                <!-- LOGIN POP UP 2 USER -->
                 <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
                     <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative">
                         <button id="login-modal-close" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none" aria-label="Close modal">
@@ -199,37 +197,32 @@
     </main>
 
     <script>
-        // Memilih elemen yang diperlukan
+        // BUAT NAVBAR DIATAS KALO DI KLIK PROFILE
         const profileButton = document.getElementById('profile-button');
         const dropdown = document.getElementById('profile-dropdown');
         const icon = document.getElementById('dropdown-icon');
 
-        // Fungsi untuk membuka/menutup dropdown
         function toggleDropdown() {
             dropdown.classList.toggle('hidden');
             icon.classList.toggle('rotate-180');
         }
 
-        // Menambahkan event listener ke tombol profil (jika ada)
         if (profileButton) {
             profileButton.addEventListener('click', function(event) {
-                // Mencegah event 'click' menyebar ke document
                 event.stopPropagation();
                 toggleDropdown();
             });
         }
 
-        // Menutup dropdown jika pengguna mengklik di luar area dropdown
         document.addEventListener('click', function(event) {
             if (dropdown && !dropdown.classList.contains('hidden')) {
-                // Cek apakah target klik bukan dropdown itu sendiri atau tombol profil
                 if (!dropdown.contains(event.target) && !profileButton.contains(event.target)) {
                     toggleDropdown();
                 }
             }
         });
 
-        // Login modal toggle
+        // UNTUK OPSI LOGIN 2 USER
         const loginButton = document.getElementById('login-button');
         const loginModal = document.getElementById('login-modal');
         const loginModalClose = document.getElementById('login-modal-close');
@@ -251,7 +244,6 @@
             });
         }
 
-        // Close modal when clicking outside modal content
         if (loginModal) {
             loginModal.addEventListener('click', function(event) {
                 if (event.target === loginModal) {
@@ -260,14 +252,13 @@
             });
         }
 
-        // Close modal on Escape key press
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape' && loginModal && !loginModal.classList.contains('hidden')) {
                 toggleLoginModal();
             }
         });
-
-        // New code: Show login modal on nav link click if not logged in
+        
+        // UNTUK NAVBAR BUKU, KATEGORI, PENGEMBALIAN KALO BELUM LOGIN
         const isLoggedIn = JSON.parse('@json(auth()->check())');
 
         if (!isLoggedIn) {
@@ -283,15 +274,6 @@
                     });
                 }
             });
-
-            // Add listener for login pinjam button
-            // const loginPinjamButton = document.getElementById('login-pinjam-button');
-            // if (loginPinjamButton) {
-            //     loginPinjamButton.addEventListener('click', function(event) {
-            //         event.preventDefault();
-            //         toggleLoginModal();
-            //     });
-            // }
         }
     </script>
 </body>
